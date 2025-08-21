@@ -175,6 +175,15 @@ body {
   background: var(--bg-primary);
 }
 
+@media(max-width: 650px){
+  #home{
+    margin-left: 0rem;
+  }
+  #home img{
+    width: 320px;
+  }
+}
+
 #home .hero-background {
   position: absolute;
   top: 0;
@@ -184,7 +193,6 @@ body {
   background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
 }
 
-/* NOVOS ELEMENTOS ADICIONADOS */
 
 /* Grid de listras sutis */
 #home .grid-overlay {
@@ -618,6 +626,11 @@ body {
   color: var(--text-secondary);
   margin-bottom: 2rem;
   line-height: 1.8;
+}
+@media(max-width: 650px){
+  #home .hero-description{
+    font: 20px !important;
+  }
 }
 
 #home .hero-buttons {
