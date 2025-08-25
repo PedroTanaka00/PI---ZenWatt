@@ -1,3 +1,69 @@
+<?php
+// Configurações do banco de dados
+$host = 'localhost';
+$dbname = 'zenwatt'; // Nome do seu banco de dados
+$username = 'root'; // Usuário padrão do XAMPP
+$password = ''; // Senha padrão do XAMPP é vazia
+
+// Inicializar variáveis
+$mensagem = '';
+$tipoMensagem = '';
+
+// Conexão com o banco de dados
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    // Não mostrar erro ao usuário para não expor informações sensíveis
+    error_log("Erro na conexão: " . $e->getMessage());
+}
+
+// Processar o formulário quando for enviado
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
+    // Coletar e sanitizar os dados do formulário
+    $nome = filter_input(INPUT_POST, 'nome', FILTER_SANITIZE_STRING);
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $telefone = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
+    $senha = $_POST['senha'];
+    $confirmar_senha = $_POST['confirmar-senha'];
+    
+    // Verificar se as senhas coincidem
+    if ($senha !== $confirmar_senha) {
+        $mensagem = "As senhas não coincidem!";
+        $tipoMensagem = "erro";
+    } else {
+        // Verificar se o email já existe
+        try {
+            $verificaEmail = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
+            $verificaEmail->execute([$email]);
+            
+            if ($verificaEmail->rowCount() > 0) {
+                $mensagem = "Este email já está cadastrado!";
+                $tipoMensagem = "erro";
+            } else {
+                // Criptografar a senha
+                $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
+                
+                // Inserir no banco de dados
+                $sql = "INSERT INTO usuarios (nome, email, telefone, senha, data_cadastro) 
+                        VALUES (?, ?, ?, ?, NOW())";
+                $stmt = $pdo->prepare($sql);
+                $stmt->execute([$nome, $email, $telefone, $senha_hash]);
+                
+                $mensagem = "Cadastro realizado com sucesso!";
+                $tipoMensagem = "sucesso";
+                
+                // Limpar o formulário
+                $_POST = array();
+            }
+        } catch (PDOException $e) {
+            error_log("Erro no cadastro: " . $e->getMessage());
+            $mensagem = "Erro ao processar cadastro. Tente novamente.";
+            $tipoMensagem = "erro";
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -19,8 +85,7 @@
     <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
     <link rel="icon" type="image/png" href="/favicon/favicon-32x32.png" sizes="32x32" />
     <link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
-    <link rel="icon" type="image/png" href="/favicon/favicon-128.png" sizes="128x128" />
-
+    <link rel="icon" type="image/png" href="/favicon/favicon-128.png" sizes="128x128" />
 </head>
 <body>
     <!-- Navigation -->
@@ -266,34 +331,49 @@
  <section id="contato">
         <div class="container">
             <h2 class="section-title">Cadastre-se e Economize!</h2>
+            
+            <?php if (!empty($mensagem)): ?>
+                <div class="mensagem <?php echo $tipoMensagem; ?>">
+                    <?php echo $mensagem; ?>
+                </div>
+                
+                <?php if ($tipoMensagem === "sucesso"): ?>
+                    <script>
+                        setTimeout(function() {
+                            document.querySelector('.mensagem').style.display = 'none';
+                        }, 5000);
+                    </script>
+                <?php endif; ?>
+            <?php endif; ?>
+            
             <div class="contact-content">
                 <div class="contact-form">
                     <h3>Formulário de Cadastro</h3>
-                    <form>
+                    <form method="POST" action="">
                         <div class="input-group">
-                            <input type="text" placeholder="Nome" required>
+                            <input type="text" name="nome" placeholder="Nome" value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>" required>
                             <i class="fas fa-user"></i>
                         </div>
 
                         <div class="input-group">
-                            <input type="email" placeholder="Email" required>
+                            <input type="email" name="email" placeholder="Email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
                             <i class="fas fa-envelope"></i>
                         </div>
 
                         <div class="input-group">
-                            <input type="tel" id="telefone" placeholder="Telefone" required maxlength="15">
+                            <input type="tel" id="telefone" name="telefone" placeholder="Telefone" value="<?php echo isset($_POST['telefone']) ? htmlspecialchars($_POST['telefone']) : ''; ?>" required maxlength="15">
                             <i class="fas fa-phone"></i>
                         </div>
 
                         <div class="input-group senha-group">
-                            <input type="password" id="senha" placeholder="Senha" required>
+                            <input type="password" id="senha" name="senha" placeholder="Senha" required>
                             <button type="button" class="toggle-senha" onclick="toggleSenha('senha', this)">
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
 
                         <div class="input-group senha-group">
-                            <input type="password" id="confirmar-senha" placeholder="Confirmar Senha" required>
+                            <input type="password" id="confirmar-senha" name="confirmar-senha" placeholder="Confirmar Senha" required>
                             <button type="button" class="toggle-senha" onclick="toggleSenha('confirmar-senha', this)">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -305,93 +385,7 @@
                         </button>
                     </form>
 
-<script>
-    // Máscara de telefone (formato (99) 99999-9999)
-    const telefoneInput = document.getElementById('telefone');
-    telefoneInput.addEventListener('input', function(e) {
-        let value = e.target.value.replace(/\D/g, ""); // só números
-        if (value.length > 11) value = value.slice(0, 11); // limita 11 dígitos
-
-        if (value.length <= 10) {
-            e.target.value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
-        } else {
-            e.target.value = value.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
-        }
-    });
-
-    // Função para mostrar/ocultar senha
-    function toggleSenha(id, btn) {
-        const input = document.getElementById(id);
-        const icon = btn.querySelector("i");
-
-        if (input.type === "password") {
-            input.type = "text";
-            icon.classList.remove("fa-eye");
-            icon.classList.add("fa-eye-slash");
-        } else {
-            input.type = "password";
-            icon.classList.remove("fa-eye-slash");
-            icon.classList.add("fa-eye");
-        }
-    }
-</script>
-
-<style>
-    .senha-group {
-        position: relative;
-    }
-
-    .toggle-senha {
-        position: absolute;
-        right: 0px;
-        margin-left: -5rem;
-        top: 50%;
-        transform: translateY(-50%);
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: #555;
-        font-size: 16px;
-    }
-</style>
-
                 </div>
-                <!--<div class="contact-info">
-                    <h3>Informações de Contato</h3>
-                    <div class="info-item">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-envelope"></i>
-                        </div>
-                        <div>
-                            <h4>Email</h4>
-                            <p>contato@primeweb.com.br</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div>
-                            <h4>Telefone</h4>
-                            <p>(19) 97137-0905</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div class="icon-wrapper">
-                            <i class="fas fa-map-marker-alt"></i>
-                        </div>
-                        <div>
-                            <h4>Localização</h4>
-                            <p>Limeira-SP</p>
-                        </div>
-                    </div>
-                    <div class="social-links">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                        <a href="https://www.instagram.com/weprime.web?igsh=NHI2eTliZm1uY2Nk" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>-->
             </div>
         </div>
         <div class="floating-shapes">
@@ -448,5 +442,72 @@
 </footer>
 
     <script src="script.js"></script>
+    
+    <script>
+        // Máscara de telefone (formato (99) 99999-9999)
+        const telefoneInput = document.getElementById('telefone');
+        telefoneInput.addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, ""); // só números
+            if (value.length > 11) value = value.slice(0, 11); // limita 11 dígitos
+
+            if (value.length <= 10) {
+                e.target.value = value.replace(/(\d{2})(\d{4})(\d{0,4})/, "($1) $2-$3");
+            } else {
+                e.target.value = value.replace(/(\d{2})(\d{5})(\d{0,4})/, "($1) $2-$3");
+            }
+        });
+
+        // Função para mostrar/ocultar senha
+        function toggleSenha(id, btn) {
+            const input = document.getElementById(id);
+            const icon = btn.querySelector("i");
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                input.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+        
+        // Validação de confirmação de senha
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const senha = document.getElementById('senha').value;
+            const confirmarSenha = document.getElementById('confirmar-senha').value;
+            
+            if (senha !== confirmarSenha) {
+                e.preventDefault();
+                alert('As senhas não coincidem!');
+            }
+        });
+    </script>
+    
+    <style>
+        .mensagem {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .sucesso {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .erro {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
 </body>
 </html>
