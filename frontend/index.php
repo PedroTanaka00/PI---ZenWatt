@@ -30,7 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
     // Verificar se as senhas coincidem
     if ($senha !== $confirmar_senha) {
         $mensagem = "As senhas não coincidem!";
-        $tipoMensagem = "erro";
+        $tipoMensagem = "erroo";
     } else {
         // Verificar se o email já existe
         try {
