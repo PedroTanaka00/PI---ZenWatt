@@ -89,30 +89,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
 </head>
 <body>
     <!-- Navigation -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <img src="../src/images/logo-zen.png" alt="WeBrothers Logo" class="logo-img">
-            </div>
-            <ul class="nav-menu">
-                <li><a href="#home" class="nav-link">Home</a></li>
-                <li><a href="#sobre" class="nav-link">Sobre</a></li>
-                <li><a href="#processo2" class="nav-link">Processo</a></li>
-                <li><a href="#contato" class="nav-link">Cadastro</a></li>
-               
-            </ul>
-            <div class="nav-controls">
-                <button class="theme-toggle" id="themeToggle">
-                    <i class="fas fa-moon"></i>
-                </button>
-                <div class="hamburger" id="hamburger">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
+<nav class="navbar" id="navbar">
+    <div class="nav-container">
+        <div class="nav-logo">
+            <img src="../src/images/logo-zen.png" alt="WeBrothers Logo" class="logo-img">
+        </div>
+        
+        <!-- Links principais -->
+        <ul class="nav-menu">
+            <li><a href="#home" class="nav-link">Home</a></li>
+            <li><a href="#sobre" class="nav-link">Sobre</a></li>
+            <li><a href="#processo2" class="nav-link">Processo</a></li>
+            <li><a href="#contato" class="nav-link">Cadastro</a></li>
+        </ul>
+
+        <!-- Link de login isolado -->
+        <div class="nav-login">
+            <a href="#login" class="nav-link login-link">Login</a>
+        </div>
+
+        <!-- Controles -->
+        <div class="nav-controls">
+            <button class="theme-toggle" id="themeToggle">
+                <i class="fas fa-moon"></i>
+            </button>
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
+
 
     <!-- Home Section -->
 <section id="home" class="hero">
