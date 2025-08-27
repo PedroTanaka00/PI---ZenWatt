@@ -26,7 +26,7 @@ new Chart(document.getElementById('lineChart'), {
     {
       label: "Custo",
       data: [30, 80, 60, 110, 90, 140],
-      borderColor: "#ff00aa",
+      borderColor: "#eeff00ff",
       fill: false,
       tension: 0.3
     }]
@@ -40,7 +40,7 @@ new Chart(document.getElementById('doughnutChart'), {
     labels: ["Pessoal", "Negócios"],
     datasets: [{
       data: [60, 40],
-      backgroundColor: ["#04b600", "#ff00aa"]
+      backgroundColor: ["#04b600", "#eeff00ff"]
     }]
   }
 });

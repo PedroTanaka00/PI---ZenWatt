@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
 
         <!-- Link de login isolado -->
         <div class="nav-login">
-            <a href="#login" class="nav-link login-link">Login</a>
+            <a href="./pagina-login/login.html" class="nav-link login-link">Login</a>
         </div>
 
         <!-- Controles -->

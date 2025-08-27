@@ -45,6 +45,7 @@ body {
   flex-shrink: 0;
 }
 
+
 .sidebar .profile {
   text-align: center;
   margin-bottom: 2rem;
@@ -70,6 +71,17 @@ body {
   align-items: center;
   gap: 10px;
   transition: background 0.3s;
+}
+
+@media (max-width: 576px){
+  .sidebar .menu li {
+    padding: 35px 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 60px !important;
+    transition: background 0.3s;
+}
 }
 
 .sidebar .menu li:hover,
