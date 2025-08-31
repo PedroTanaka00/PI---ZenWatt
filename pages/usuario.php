@@ -1,0 +1,138 @@
+<?php
+session_start();
+
+// Verificar se o usuário está logado
+if (!isset($_SESSION['usuario_id'])) {
+    header('Location: ./pages/usuario.php');
+    exit();
+}
+
+// Usar caminho absoluto para evitar erros
+$base_dir = dirname(__DIR__); // Volta 1 nível para a pasta app
+require_once $base_dir . '/config/database.php';
+
+$database = new Database();
+// Use $db = $database->pdo; (como no login) OU $db = $database->getConnection();
+$db = $database->pdo;
+
+// Buscar dados do usuário
+$query = "SELECT * FROM usuarios WHERE id = :id";
+$stmt = $db->prepare($query);
+$stmt->bindParam(':id', $_SESSION['usuario_id']);
+$stmt->execute();
+$usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+?>
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Usuário - ZenWatt</title>
+  <link rel="stylesheet" href="../assets/css/usuario.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/favicon/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/favicon/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/favicon/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/favicon/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="60x60" href="/favicon/apple-touch-icon-60x60.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="120x120" href="/favicon/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/favicon/apple-touch-icon-76x76.png" />
+  <link rel="apple-touch-icon-precomposed" sizes="152x152" href="/favicon/apple-touch-icon-152x152.png" />
+  <link rel="icon" type="image/png" href="/favicon/favicon-196x196.png" sizes="196x196" />
+  <link rel="icon" type="image/png" href="/favicon/favicon-96x96.png" sizes="96x96" />
+  <link rel="icon" type="image/png" href="/favicon/favicon-32x32.png" sizes="32x32" />
+  <link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
+  <link rel="icon" type="image/png" href="/favicon/favicon-128.png" sizes="128x128" />
+</head>
+<body>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="profile">
+      <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
+      <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
+      <p><?php echo htmlspecialchars($usuario['email']); ?></p>
+    </div>
+    <ul class="menu">
+      <li><i class="fas fa-home"></i> <span>Dashboard</span></li>
+      <li><i class="fas fa-user"></i> <span>Conta</span></li>
+      <li><i class="fas fa-map-marker-alt"></i> <span>Localização</span></li>
+      <li><i class="fas fa-comment"></i> <span>Chat</span></li>
+      <li><i class="fas fa-star"></i> <span>Favoritos</span></li>
+      <li><i class="fas fa-cog"></i> <span>Configurações</span></li>
+      <li><i class="fas fa-lock"></i> <span>Privacidade</span></li>
+      <li class="logout">
+        <a href="logout.php" style="color: inherit; text-decoration: none;">
+          <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main-content">
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="search-box">
+        <input type="text" placeholder="Pesquisar...">
+        <i class="fas fa-search"></i>
+      </div>
+      <div class="top-icons">
+        <i class="fas fa-bell"></i>
+        <i class="fas fa-user"></i>
+        <i class="fas fa-ellipsis-h"></i>
+      </div>
+    </header>
+
+    <!-- Dashboard content -->
+    <section class="dashboard">
+      <div class="card small">
+        <h3>Data 1</h3>
+        <p class="big-number">3,256</p>
+        <span>visitas por dia</span>
+      </div>
+      <div class="card small">
+        <h3>Data 2</h3>
+        <p class="big-number">1,234</p>
+        <span>novos usuários</span>
+      </div>
+      <div class="card chart">
+        <h3>Gráfico Barras</h3>
+        <canvas id="barChart"></canvas>
+      </div>
+      <div class="card chart">
+        <h3>Gráfico Linhas</h3>
+        <canvas id="lineChart"></canvas>
+      </div>
+      <div class="card chart">
+        <h3>Distribuição</h3>
+        <canvas id="doughnutChart"></canvas>
+      </div>
+      <div class="card calendar">
+        <h3>Calendário</h3>
+        <div class="calendar-grid">
+          <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+          <div></div><div></div><div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
+          <div class="day">6</div><div class="day">7</div><div class="day active">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day">12</div>
+          <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day">18</div><div class="day">19</div>
+          <div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day active">24</div><div class="day">25</div><div class="day">26</div>
+          <div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day">31</div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal" id="calendarModal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <h2>Evento</h2>
+      <p>Texto do evento aqui (você pode alterar livremente).</p>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="../assets/js/usuario.js"></script>
+</body>
+</html>
