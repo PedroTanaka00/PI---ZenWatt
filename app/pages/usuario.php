@@ -26,11 +26,13 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel do Usuário - ZenWatt</title>
-  <link rel="stylesheet" href="../assets/css/usuario.css">
+  <link rel="stylesheet" href="../assets/css/usuario.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+  <!-- Favicons -->
   <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/favicon/apple-touch-icon-57x57.png" />
   <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/favicon/apple-touch-icon-114x114.png" />
   <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/favicon/apple-touch-icon-72x72.png" />
@@ -55,7 +57,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
       <p><?php echo htmlspecialchars($usuario['email']); ?></p>
     </div>
     <ul class="menu">
-      <li><i class="fas fa-home"></i> <span>Dashboard</span></li>
+      <li class="active"><i class="fas fa-home"></i> <span>Dashboard</span></li>
       <li><i class="fas fa-user"></i> <span>Conta</span></li>
       <li><i class="fas fa-map-marker-alt"></i> <span>Localização</span></li>
       <li><i class="fas fa-comment"></i> <span>Chat</span></li>
@@ -70,12 +72,12 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     </ul>
   </aside>
 
-  <!-- Main content -->
+  <!-- Main -->
   <main class="main-content">
     <!-- Topbar -->
     <header class="topbar">
       <div class="search-box">
-        <input type="text" placeholder="Pesquisar...">
+        <input type="text" id="searchInput" placeholder="Pesquisar...">
         <i class="fas fa-search"></i>
       </div>
       <div class="top-icons">
@@ -85,50 +87,165 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
       </div>
     </header>
 
-    <!-- Dashboard content -->
+    <!-- Dashboard -->
     <section class="dashboard">
-      <div class="card small">
-        <h3>Data 1</h3>
-        <p class="big-number">3,256</p>
-        <span>visitas por dia</span>
+      <!-- KPIs -->
+      <div class="card small kpi">
+        <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
+        <div>
+          <h3>Consumo Hoje</h3>
+          <p class="big-number" id="kpiHoje">12.4 kWh</p>
+          <span class="kpi-sub">+8% vs ontem</span>
+        </div>
       </div>
-      <div class="card small">
-        <h3>Data 2</h3>
-        <p class="big-number">1,234</p>
-        <span>novos usuários</span>
+
+      <div class="card small kpi">
+        <div class="kpi-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
+        <div>
+          <h3>Custo Estimado (mês)</h3>
+          <p class="big-number" id="kpiCusto">R$ 238,90</p>
+          <span class="kpi-sub">Bandeira: Verde</span>
+        </div>
       </div>
+
+      <div class="card small kpi">
+        <div class="kpi-icon"><i class="fa-solid fa-seedling"></i></div>
+        <div>
+          <h3>Economia</h3>
+          <p class="big-number" id="kpiEconomia">18%</p>
+          <span class="kpi-sub">vs média dos últimos 3 meses</span>
+        </div>
+      </div>
+
+      <!-- Gráficos principais -->
       <div class="card chart">
-        <h3>Gráfico Barras</h3>
-        <canvas id="barChart"></canvas>
-      </div>
-      <div class="card chart">
-        <h3>Gráfico Linhas</h3>
+        <div class="card-header">
+          <h3>Consumo Diário (últimos 30 dias)</h3>
+          <div class="actions">
+            <button class="btn ghost" id="btnAtualizar1"><i class="fa-solid fa-rotate"></i> atualizar</button>
+          </div>
+        </div>
         <canvas id="lineChart"></canvas>
       </div>
+
       <div class="card chart">
-        <h3>Distribuição</h3>
+        <div class="card-header">
+          <h3>Comparativo Mensal (kWh)</h3>
+          <div class="actions">
+            <button class="btn ghost" id="btnAtualizar2"><i class="fa-solid fa-rotate"></i> atualizar</button>
+          </div>
+        </div>
+        <canvas id="barChart"></canvas>
+      </div>
+
+      <div class="card chart">
+        <div class="card-header">
+          <h3>Consumo por Finalidade</h3>
+        </div>
         <canvas id="doughnutChart"></canvas>
       </div>
-      <div class="card calendar">
-        <h3>Calendário</h3>
-        <div class="calendar-grid">
+
+      <div class="card chart">
+        <div class="card-header">
+          <h3>Picos por Faixa Horária</h3>
+        </div>
+        <canvas id="areaChart"></canvas>
+      </div>
+
+      <div class="card chart">
+        <div class="card-header">
+          <h3>Participação por Eletrodoméstico</h3>
+        </div>
+        <canvas id="aparelhosChart"></canvas>
+      </div>
+
+      <div class="card chart">
+        <div class="card-header">
+          <h3>Projeção de Consumo (próx. 6 meses)</h3>
+        </div>
+        <canvas id="projectionChart"></canvas>
+      </div>
+
+      <!-- Calendário (maior + CTA) -->
+      <div class="card calendar" style="width: 200% !important">
+        <div class="card-header calendar-header">
+          <h3>Calendário</h3>
+          <div class="calendar-cta">
+            <span class="hint"><i class="fa-solid fa-clock-rotate-left"></i> Dica: acompanhe o <strong>Histórico de consumo</strong> por dia.</span>
+            <a href="historico.php" class="btn">Ver Histórico</a>
+          </div>
+        </div>
+        <div class="calendar-grid" id="calendarGrid">
           <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
-          <div></div><div></div><div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
+          <!-- exemplo mês com 31 dias e offset de 2 -->
+          <div></div><div></div>
+          <div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
           <div class="day">6</div><div class="day">7</div><div class="day active">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day">12</div>
           <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day">18</div><div class="day">19</div>
           <div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day active">24</div><div class="day">25</div><div class="day">26</div>
           <div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day">31</div>
         </div>
       </div>
+
+      <!-- Formulário de eletrodomésticos -->
+      <div class="card wide">
+        <div class="card-header">
+          <h3>Adicionar Eletrodoméstico</h3>
+        </div>
+        <form id="formAparelho" class="aparelho-form">
+          <div class="form-row">
+            <div class="field">
+              <label>Nome</label>
+              <input type="text" id="aparelhoNome" placeholder="Ex: Geladeira" required />
+            </div>
+            <div class="field">
+              <label>Potência (W)</label>
+              <input type="number" id="aparelhoPotencia" min="1" placeholder="Ex: 150" required />
+            </div>
+            <div class="field">
+              <label>Horas/dia</label>
+              <input type="number" id="aparelhoHoras" step="0.1" min="0" placeholder="Ex: 8" required />
+            </div>
+            <div class="field">
+              <label>Quantidade</label>
+              <input type="number" id="aparelhoQtd" min="1" value="1" required />
+            </div>
+            <div class="field submit-field">
+              <button type="submit" class="btn"><i class="fa-solid fa-plus"></i> Adicionar</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="table-wrap">
+          <table class="table" id="tabelaAparelhos">
+            <thead>
+              <tr>
+                <th>Aparelho</th>
+                <th>Potência (W)</th>
+                <th>Horas/dia</th>
+                <th>Qtd</th>
+                <th>kWh/mês (estimado)</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- linhas adicionadas via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </section>
   </main>
 
-  <!-- Modal -->
+  <!-- Modal do calendário -->
   <div class="modal" id="calendarModal">
     <div class="modal-content">
       <span class="close-btn" id="closeModal">&times;</span>
-      <h2>Evento</h2>
-      <p>Texto do evento aqui (você pode alterar livremente).</p>
+      <h2 id="modalTitle">Evento</h2>
+      <p id="modalText">Consumo do dia selecionado e dicas aparecerão aqui.</p>
+      <div class="modal-actions">
+        <a class="btn" href="historico.php">Abrir histórico</a>
+      </div>
     </div>
   </div>
 

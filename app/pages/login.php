@@ -339,7 +339,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 margin: 0 10px;
             }
         }
-    
+      }
 </style>
 
 <script>
