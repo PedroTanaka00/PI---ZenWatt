@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
     $telefone = filter_input(INPUT_POST, 'telefone', FILTER_SANITIZE_STRING);
     $senha = $_POST['senha'];
     $confirmar_senha = $_POST['confirmar-senha'];
-    
+
     // Verificar se as senhas coincidem
     if ($senha !== $confirmar_senha) {
         $mensagem = "As senhas não coincidem!";
@@ -36,23 +36,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
         try {
             $verificaEmail = $pdo->prepare("SELECT id FROM usuarios WHERE email = ?");
             $verificaEmail->execute([$email]);
-            
+
             if ($verificaEmail->rowCount() > 0) {
                 $mensagem = "Este email já está cadastrado!";
                 $tipoMensagem = "erro";
             } else {
                 // Criptografar a senha
                 $senha_hash = password_hash($senha, PASSWORD_DEFAULT);
-                
+
                 // Inserir no banco de dados
                 $sql = "INSERT INTO usuarios (nome, email, telefone, senha, data_cadastro) 
                         VALUES (?, ?, ?, ?, NOW())";
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$nome, $email, $telefone, $senha_hash]);
-                
+
                 $mensagem = "Cadastro realizado com sucesso!";
                 $tipoMensagem = "sucesso";
-                
+
                 // Limpar o formulário
                 $_POST = array();
             }
@@ -66,13 +66,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ZenWatt | Controle de Consumo Elétrico Domiciliar</title>
     <link rel="stylesheet" href="./assets/css/style.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="apple-touch-icon-precomposed" sizes="57x57" href="/favicon/apple-touch-icon-57x57.png" />
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/favicon/apple-touch-icon-114x114.png" />
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/favicon/apple-touch-icon-72x72.png" />
@@ -87,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
     <link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
     <link rel="icon" type="image/png" href="/favicon/favicon-128.png" sizes="128x128" />
 </head>
+
 <body>
     <!-- Navigation -->
     <nav class="navbar" id="navbar">
@@ -99,10 +102,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
                 <li><a href="#sobre" class="nav-link">Sobre</a></li>
                 <li><a href="#processo2" class="nav-link">Processo</a></li>
                 <li><a href="#contato" class="nav-link">Cadastro</a></li>
-                <li><a href="./pages/login.php" class="nav-link">Login</a></li>
-               
             </ul>
             <div class="nav-controls">
+                <a href="./pages/login.php" class="login-link nav-link">Login</a>
+
                 <button class="theme-toggle" id="themeToggle">
                     <i class="fas fa-moon"></i>
                 </button>
@@ -116,118 +119,120 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
     </nav>
 
     <!-- Home Section -->
-<section id="home" class="hero">
-    <!-- Grid de listras sutis -->
-    <div class="grid-overlay">
-        <div class="grid-lines horizontal"></div>
-        <div class="grid-lines vertical"></div>
-    </div>
-    
-    <!-- Elementos geométricos modernos -->
-    <div class="geometric-shapes">
-        <div class="shape shape-1"></div>
-        <div class="shape shape-2"></div>
-        <div class="shape shape-3"></div>
-        <div class="shape shape-4"></div>
-    </div>
+    <section id="home" class="hero">
+        <!-- Grid de listras sutis -->
+        <div class="grid-overlay">
+            <div class="grid-lines horizontal"></div>
+            <div class="grid-lines vertical"></div>
+        </div>
 
-    <div class="hero-background">
-        <div class="floating-elements">
-            <!-- Elementos originais -->
-            <div class="floating-element" data-speed="2">
-                <i class="fas fa-code"></i>
-            </div>
-            <div class="floating-element" data-speed="3">
-                <i class="fas fa-laptop-code"></i>
-            </div>
-            <div class="floating-element" data-speed="1.5">
-                <i class="fas fa-mobile-alt"></i>
-            </div>
-            <div class="floating-element" data-speed="2.5">
-                <i class="fas fa-rocket"></i>
-            </div>
-            
-            <!-- Novos elementos relacionados a web -->
-            <div class="floating-element web-element" data-speed="1.8">
-                <i class="fab fa-html5"></i>
-            </div>
-            <div class="floating-element web-element" data-speed="2.2">
-                <i class="fab fa-css3-alt"></i>
-            </div>
-            <div class="floating-element web-element" data-speed="1.7">
-                <i class="fab fa-js-square"></i>
-            </div>
-            <div class="floating-element web-element" data-speed="2.8">
-                <i class="fab fa-react"></i>
-            </div>
-            <div class="floating-element web-element" data-speed="1.9">
-                <i class="fas fa-database"></i>
-            </div>
-            <div class="floating-element web-element" data-speed="2.4">
-                <i class="fas fa-server"></i>
-            </div>
-            <div class="floating-element web-element" data-speed="1.6">
-                <i class="fas fa-cloud"></i>
-            </div>
-            <div class="floating-element web-element" data-speed="2.7">
-                <i class="fab fa-node-js"></i>
-            </div>
+        <!-- Elementos geométricos modernos -->
+        <div class="geometric-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+            <div class="shape shape-4"></div>
         </div>
-        
-        <!-- Partículas flutuantes -->
-        <div class="particles">
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-            <div class="particle"></div>
-        </div>
-    </div>
-    
-    <div class="hero-content">
-        <div class="hero-text">
-            <h1 class="hero-title">
-                <span class="gradient-text">ZenWatt</span>
-                <span class="typewriter" id="typewriter"></span>
-            </h1>
-            <p class="hero-description">
-               Conheça o <strong>ZenWatt</strong>! O sistema inteligente que ajuda você a economizar na conta de luz, monitorando seus eletrodomésticos e indicando soluções sustentáveis.
-            </p>
-            <div class="hero-buttons">
-                <button class="btn btn-primary" onclick="scrollToSection('sobre')">
+
+        <div class="hero-background">
+            <div class="floating-elements">
+                <!-- Elementos originais -->
+                <div class="floating-element" data-speed="2">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="floating-element" data-speed="3">
+                    <i class="fas fa-laptop-code"></i>
+                </div>
+                <div class="floating-element" data-speed="1.5">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="floating-element" data-speed="2.5">
                     <i class="fas fa-rocket"></i>
-                    Conhecer Projeto
-                </button>
-                <button class="btn btn-secondary" onclick="scrollToSection('contato')">
-                    <i class="fas fa-eye"></i>
-                    Realizar Cadastro
-                </button>
+                </div>
+
+                <!-- Novos elementos relacionados a web -->
+                <div class="floating-element web-element" data-speed="1.8">
+                    <i class="fab fa-html5"></i>
+                </div>
+                <div class="floating-element web-element" data-speed="2.2">
+                    <i class="fab fa-css3-alt"></i>
+                </div>
+                <div class="floating-element web-element" data-speed="1.7">
+                    <i class="fab fa-js-square"></i>
+                </div>
+                <div class="floating-element web-element" data-speed="2.8">
+                    <i class="fab fa-react"></i>
+                </div>
+                <div class="floating-element web-element" data-speed="1.9">
+                    <i class="fas fa-database"></i>
+                </div>
+                <div class="floating-element web-element" data-speed="2.4">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div class="floating-element web-element" data-speed="1.6">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div class="floating-element web-element" data-speed="2.7">
+                    <i class="fab fa-node-js"></i>
+                </div>
+            </div>
+
+            <!-- Partículas flutuantes -->
+            <div class="particles">
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
+                <div class="particle"></div>
             </div>
         </div>
-        <img src="./assets/images/fav-zen.png" width="400" alt="">
-    </div>
-    
-    <!-- Linha curvada decorativa -->
-    <div class="curved-line">
-        <svg viewBox="0 0 1200 80" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0,60 Q600,20 1200,60" stroke="var(--primary-color)" stroke-width="1.5" fill="none" opacity="0.4"/>
-        </svg>
-    </div>
-</section>
+
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="gradient-text">ZenWatt</span>
+                    <span class="typewriter" id="typewriter"></span>
+                </h1>
+                <p class="hero-description">
+                    Conheça o <strong>ZenWatt</strong>! O sistema inteligente que ajuda você a economizar na conta de
+                    luz, monitorando seus eletrodomésticos e indicando soluções sustentáveis.
+                </p>
+                <div class="hero-buttons">
+                    <button class="btn btn-primary" onclick="scrollToSection('sobre')">
+                        <i class="fas fa-rocket"></i>
+                        Conhecer Projeto
+                    </button>
+                    <button class="btn btn-secondary" onclick="scrollToSection('contato')">
+                        <i class="fas fa-eye"></i>
+                        Realizar Cadastro
+                    </button>
+                </div>
+            </div>
+            <img src="./assets/images/fav-zen.png" width="400" alt="">
+        </div>
+
+        <!-- Linha curvada decorativa -->
+        <div class="curved-line">
+            <svg viewBox="0 0 1200 80" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0,60 Q600,20 1200,60" stroke="var(--primary-color)" stroke-width="1.5" fill="none"
+                    opacity="0.4" />
+            </svg>
+        </div>
+    </section>
 
 
-  <section id="sobre" class="about">
+    <section id="sobre" class="about">
         <div class="container">
-            
+
             <div class="title-container">
                 <div class="title-wrapper">
                     <span class="heading-start">SOBRE</span>
@@ -245,21 +250,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
                             <i class="fas fa-lightbulb"></i>
                         </div>
                         <h3>Nossa Missão</h3>
-                        <p>Oferecer um sistema simples, inovador e confiável para monitorar, analisar e otimizar o consumo elétrico residencial, incentivando práticas de economia e uso inteligente da energia.</p>
+                        <p>Oferecer um sistema simples, inovador e confiável para monitorar, analisar e otimizar o
+                            consumo elétrico residencial, incentivando práticas de economia e uso inteligente da
+                            energia.</p>
                     </div>
                     <div class="about-card">
                         <div class="card-icon">
                             <i class="fas fa-users"></i>
                         </div>
                         <h3>Nosso Jeito de Trabalhar</h3>
-                        <p>Trabalhamos com inovação, colaboração e responsabilidade socioambiental. Nossa prioridade é unir tecnologia e sustentabilidade para entregar valor real às pessoas e à sociedade, sempre com foco em resultados práticos e acessíveis.</p>
+                        <p>Trabalhamos com inovação, colaboração e responsabilidade socioambiental. Nossa prioridade é
+                            unir tecnologia e sustentabilidade para entregar valor real às pessoas e à sociedade, sempre
+                            com foco em resultados práticos e acessíveis.</p>
                     </div>
                     <div class="about-card">
                         <div class="card-icon">
                             <i class="fas fa-trophy"></i>
                         </div>
                         <h3>Nossa Visão</h3>
-                        <p>Ser referência em soluções tecnológicas que promovam eficiência energética, ajudando lares a reduzir custos e contribuindo para um futuro mais sustentável e consciente.</p>
+                        <p>Ser referência em soluções tecnológicas que promovam eficiência energética, ajudando lares a
+                            reduzir custos e contribuindo para um futuro mais sustentável e consciente.</p>
                     </div>
                 </div>
                 <div class="about-stats">
@@ -284,7 +294,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
         </div>
     </section>
 
-     <section id="processo2">
+    <section id="processo2">
         <div class="container">
             <h2 class="section-title">Nosso Processo</h2>
             <div class="timeline">
@@ -329,41 +339,55 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
         </div>
     </section>
 
- <section id="contato">
+    <section id="contato">
         <div class="container">
             <h2 class="section-title">Cadastre-se e Economize!</h2>
-            
+
             <?php if (!empty($mensagem)): ?>
                 <div class="mensagem <?php echo $tipoMensagem; ?>">
                     <?php echo $mensagem; ?>
                 </div>
-                
+
                 <?php if ($tipoMensagem === "sucesso"): ?>
                     <script>
-                        setTimeout(function() {
+                        setTimeout(function () {
                             document.querySelector('.mensagem').style.display = 'none';
                         }, 5000);
                     </script>
                 <?php endif; ?>
             <?php endif; ?>
-            
+
             <div class="contact-content">
                 <div class="contact-form">
                     <h3>Formulário de Cadastro</h3>
                     <form method="POST" action="">
                         <div class="input-group">
-                            <input type="text" name="nome" placeholder="Nome" value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>" required>
+                            <input type="text" name="nome" placeholder="Nome"
+                                value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>"
+                                required>
                             <i class="fas fa-user"></i>
                         </div>
 
                         <div class="input-group">
-                            <input type="email" name="email" placeholder="Email" value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>" required>
+                            <input type="email" name="email" placeholder="Email"
+                                value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
+                                required>
                             <i class="fas fa-envelope"></i>
                         </div>
 
                         <div class="input-group">
-                            <input type="tel" id="telefone" name="telefone" placeholder="Telefone" value="<?php echo isset($_POST['telefone']) ? htmlspecialchars($_POST['telefone']) : ''; ?>" required maxlength="15">
+                            <input type="tel" id="telefone" name="telefone" placeholder="Telefone"
+                                value="<?php echo isset($_POST['telefone']) ? htmlspecialchars($_POST['telefone']) : ''; ?>"
+                                required maxlength="15">
                             <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="input-group">
+                            <select class="input-group" name="tensao" required>
+                                <option value="" style="color: #757575" disabled selected>Tensão Residencial</option>
+                                <option value="127" style="color: #00ff3cff;">127V</option>
+                                <option value="220" style="color: #03ff3eff;">220V</option>
+                            </select>
+                            <i class="fas fa-bolt"></i>
                         </div>
 
                         <div class="input-group senha-group">
@@ -374,7 +398,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
                         </div>
 
                         <div class="input-group senha-group">
-                            <input type="password" id="confirmar-senha" name="confirmar-senha" placeholder="Confirmar Senha" required>
+                            <input type="password" id="confirmar-senha" name="confirmar-senha"
+                                placeholder="Confirmar Senha" required>
                             <button type="button" class="toggle-senha" onclick="toggleSenha('confirmar-senha', this)">
                                 <i class="fas fa-eye"></i>
                             </button>
@@ -396,58 +421,59 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
             <div class="shape shape-4"></div>
         </div>
     </section>
-    
 
-   <!-- Footer -->
-<footer id="footer" class="footer">
-    <div class="footer-background">
-        <div class="footer-waves">
-            <div class="wave wave-1"></div>
-            <div class="wave wave-2"></div>
-            <div class="wave wave-3"></div>
-        </div>
-        <div class="floating-particles">
-            <div class="particle particle-1"></div>
-            <div class="particle particle-2"></div>
-            <div class="particle particle-3"></div>
-            <div class="particle particle-4"></div>
-            <div class="particle particle-5"></div>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="footer-content">
-        
-        <div class="footer-bottom">
-            <div class="footer-bottom-content">
-                <div class="copyright">
-                    <p>&copy; 2025 <span class="brand-highlight">ZenWatt</span>. Todos os direitos reservados.</p>
-                </div>
-                <div class="footer-links">
-                    <a href="#" class="footer-link">
-                        <i class="fas fa-shield-alt"></i>
-                        Política de Privacidade
-                    </a>
-                    <a href="#" class="footer-link">
-                        <i class="fas fa-file-contract"></i>
-                        Termos de Uso
-                    </a>
-                </div>
+
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+        <div class="footer-background">
+            <div class="footer-waves">
+                <div class="wave wave-1"></div>
+                <div class="wave wave-2"></div>
+                <div class="wave wave-3"></div>
             </div>
-            <div class="scroll-to-top" id="scrollToTop">
-                <i class="fas fa-arrow-up"></i>
-                <div class="scroll-ripple"></div>
+            <div class="floating-particles">
+                <div class="particle particle-1"></div>
+                <div class="particle particle-2"></div>
+                <div class="particle particle-3"></div>
+                <div class="particle particle-4"></div>
+                <div class="particle particle-5"></div>
             </div>
         </div>
-    </div>
-</footer>
+
+        <div class="container">
+            <div class="footer-content">
+
+                <div class="footer-bottom">
+                    <div class="footer-bottom-content">
+                        <div class="copyright">
+                            <p>&copy; 2025 <span class="brand-highlight">ZenWatt</span>. Todos os direitos reservados.
+                            </p>
+                        </div>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">
+                                <i class="fas fa-shield-alt"></i>
+                                Política de Privacidade
+                            </a>
+                            <a href="#" class="footer-link">
+                                <i class="fas fa-file-contract"></i>
+                                Termos de Uso
+                            </a>
+                        </div>
+                    </div>
+                    <div class="scroll-to-top" id="scrollToTop">
+                        <i class="fas fa-arrow-up"></i>
+                        <div class="scroll-ripple"></div>
+                    </div>
+                </div>
+            </div>
+    </footer>
 
     <script src="./assets/js/script.js"></script>
-    
+
     <script>
         // Máscara de telefone (formato (99) 99999-9999)
         const telefoneInput = document.getElementById('telefone');
-        telefoneInput.addEventListener('input', function(e) {
+        telefoneInput.addEventListener('input', function (e) {
             let value = e.target.value.replace(/\D/g, ""); // só números
             if (value.length > 11) value = value.slice(0, 11); // limita 11 dígitos
 
@@ -473,19 +499,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
                 icon.classList.add("fa-eye");
             }
         }
-        
+
         // Validação de confirmação de senha
-        document.querySelector('form').addEventListener('submit', function(e) {
+        document.querySelector('form').addEventListener('submit', function (e) {
             const senha = document.getElementById('senha').value;
             const confirmarSenha = document.getElementById('confirmar-senha').value;
-            
+
             if (senha !== confirmarSenha) {
                 e.preventDefault();
                 alert('As senhas não coincidem!');
             }
         });
     </script>
-    
+
     <style>
         .mensagem {
             padding: 15px;
@@ -497,13 +523,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
             margin-left: auto;
             margin-right: auto;
         }
-        
+
         .sucesso {
             background-color: #d4edda;
             color: #155724;
             border: 1px solid #c3e6cb;
         }
-        
+
         .erro {
             background-color: #f8d7da;
             color: #721c24;
@@ -511,4 +537,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
         }
     </style>
 </body>
+
 </html>

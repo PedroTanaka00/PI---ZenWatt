@@ -185,6 +185,17 @@ body {
   color: #fff;
 }
 
+.login-link {
+    border-color: #00ff00;
+    color: #00ff00;
+}
+
+.login-link:hover {
+    background-color: #00ff00;
+    color: #1a1a1a; /* Texto escuro para contraste no fundo verde */
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); /* Efeito de brilho */
+}
+
 
 
 /* Hero Section */
@@ -1804,6 +1815,29 @@ body {
 #contato .input-group {
   position: relative;
   margin-bottom: 30px;
+}
+
+.input-group-senha-group {
+    list-style: none; 
+    padding-left: 0;  
+    margin: 0;        
+}
+
+#contato .input-group select {
+  width: 100%;
+  padding: 15px 20px;
+  background: #3d403d;
+  font-family: sans-serif;
+  margin-bottom: 0;
+  border-radius: 10px;
+  color: #04b600;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+.input-group select:focus {
+    outline: none; /* Remove o contorno padrão feio do navegador */
+    box-shadow: 0 0 10px rgba(0, 255, 0, 0.75); /* Efeito de brilho "glow" */
 }
 
 #contato .input-group input,
