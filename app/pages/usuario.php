@@ -58,7 +58,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
     <ul class="menu">
       <li class="active"><i class="fas fa-home"></i> <span>Dashboard</span></li>
-      <li><i class="fas fa-user"></i> <span>Conta</span></li>
+      <li><i class="fas fa-user"></i> <a href="../pages/conta.php">Conta</a></li>
       <li><i class="fas fa-map-marker-alt"></i> <span>Localização</span></li>
       <li><i class="fas fa-comment"></i> <span>Chat</span></li>
       <li><i class="fas fa-star"></i> <span>Favoritos</span></li>

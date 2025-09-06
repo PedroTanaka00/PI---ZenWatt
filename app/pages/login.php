@@ -56,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Login - ZenWatt | Controle de Consumo Elétrico</title>
     <link rel="stylesheet" href="../assets/css/login.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -68,8 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </a>
             </div>
             <ul class="nav-menu">
-                <li><a href="../index.php" class="nav-link">Home</a></li>
-                <li><a href="../index.php" class="nav-link">Cadastro</a></li>
+                <li><a href="../index.php" class="nav-link"><i class="fa-solid fa-house"></i></a></li>
+                <li><a href="../index.php#contato" class="nav-link">Cadastro</a></li>
             </ul>
         </div>
     </nav>
@@ -92,7 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <span class="toggle-password" onclick="togglePassword()"><i class="fas fa-eye"></i></span>
                 </div>
                 <button type="submit" class="btn">Entrar</button>
-                <div class="options">
+                <div class="options" style="align-items: center; justify-content: center;">
+                    <p>Não possui cadastro? <a href="../index.php#contato">Clique aqui</a></p>
                     <a href="#">Esqueceu a senha?</a>
                 </div>
             </form>

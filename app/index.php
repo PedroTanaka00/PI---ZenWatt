@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([$nome, $email, $telefone, $senha_hash]);
 
+
                 $mensagem = "Cadastro realizado com sucesso!";
                 $tipoMensagem = "sucesso";
 
