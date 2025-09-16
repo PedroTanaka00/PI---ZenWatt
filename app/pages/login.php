@@ -238,7 +238,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .login-box {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0);
             backdrop-filter: blur(10px);
             border-radius: 20px;
             padding: 40px;
@@ -257,7 +257,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .input-group {
             display: flex;
             align-items: center;
-            background: rgba(255,255,255,0.15);
+            background: rgba(255, 255, 255, 0);
             border-radius: 30px;
             padding: 12px 15px;
             position: relative;
