@@ -102,9 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
                 <li><a href="#home" class="nav-link">Home</a></li>
                 <li><a href="#sobre" class="nav-link">Sobre</a></li>
                 <li><a href="#processo2" class="nav-link">Processo</a></li>
-                <li><a href="#contato" class="nav-link">Cadastro</a></li>
             </ul>
             <div class="nav-controls">
+                <a href="./pages/cadastro.php" class="login-link nav-link">Cadastro</a>
                 <a href="./pages/login.php" class="login-link nav-link">Login</a>
 
                 <button class="theme-toggle" id="themeToggle">
@@ -340,88 +340,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
         </div>
     </section>
 
-    <section id="contato">
-        <div class="container">
-            <h2 class="section-title">Cadastre-se e Economize!</h2>
+    
+<section id="cta-processo">
+  <div class="container">
+    <h2 class="section-title">Transforme seu Consumo em Economia</h2>
+    <p class="section-subtitle">
+      Cadastre-se agora e descubra como monitorar seus gastos de energia, 
+      receber relatórios claros e dicas práticas para reduzir sua conta de luz.
+    </p>
 
-            <?php if (!empty($mensagem)): ?>
-                <div class="mensagem <?php echo $tipoMensagem; ?>">
-                    <?php echo $mensagem; ?>
-                </div>
+    
 
-                <?php if ($tipoMensagem === "sucesso"): ?>
-                    <script>
-                        setTimeout(function () {
-                            document.querySelector('.mensagem').style.display = 'none';
-                        }, 5000);
-                    </script>
-                <?php endif; ?>
-            <?php endif; ?>
-
-            <div class="contact-content">
-                <div class="contact-form">
-                    <h3>Formulário de Cadastro</h3>
-                    <form method="POST" action="">
-                        <div class="input-group">
-                            <input type="text" name="nome" placeholder="Nome"
-                                value="<?php echo isset($_POST['nome']) ? htmlspecialchars($_POST['nome']) : ''; ?>"
-                                required>
-                            <i class="fas fa-user"></i>
-                        </div>
-
-                        <div class="input-group">
-                            <input type="email" name="email" placeholder="Email"
-                                value="<?php echo isset($_POST['email']) ? htmlspecialchars($_POST['email']) : ''; ?>"
-                                required>
-                            <i class="fas fa-envelope"></i>
-                        </div>
-
-                        <div class="input-group">
-                            <input type="tel" id="telefone" name="telefone" placeholder="Telefone"
-                                value="<?php echo isset($_POST['telefone']) ? htmlspecialchars($_POST['telefone']) : ''; ?>"
-                                required maxlength="15">
-                            <i class="fas fa-phone"></i>
-                        </div>
-                        <div class="input-group">
-                            <select class="input-group" name="tensao" required>
-                                <option value="" style="color: #757575" disabled selected>Tensão Residencial</option>
-                                <option value="127" style="color: #00ff3cff;">127V</option>
-                                <option value="220" style="color: #03ff3eff;">220V</option>
-                            </select>
-                            <i class="fas fa-bolt"></i>
-                        </div>
-
-                        <div class="input-group senha-group">
-                            <input type="password" id="senha" name="senha" placeholder="Senha" required>
-                            <button type="button" class="toggle-senha" onclick="toggleSenha('senha', this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-
-                        <div class="input-group senha-group">
-                            <input type="password" id="confirmar-senha" name="confirmar-senha"
-                                placeholder="Confirmar Senha" required>
-                            <button type="button" class="toggle-senha" onclick="toggleSenha('confirmar-senha', this)">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                        </div>
-
-                        <button type="submit" class="btn">
-                            <span>Cadastre-se!</span>
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </form>
-
-                </div>
-            </div>
-        </div>
-        <div class="floating-shapes">
-            <div class="shape shape-1"></div>
-            <div class="shape shape-2"></div>
-            <div class="shape shape-3"></div>
-            <div class="shape shape-4"></div>
-        </div>
-    </section>
+    <div class="cta-button">
+      <a href="./pages/cadastro.php" class="btn-cadastro">Quero Economizar Agora</a>
+    </div>
+  </div>
+</section>
 
 
     <!-- Footer -->

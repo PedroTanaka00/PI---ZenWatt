@@ -1741,6 +1741,103 @@ body {
 }
 
 
+
+#cta-processo {
+  padding: 80px 20px;
+  background: var(--bg-secondary);
+  text-align: center;
+}
+
+#cta-processo .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#cta-processo .section-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  color: #04b600;
+  font-weight: bold;
+}
+
+#cta-processo .section-subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  margin-bottom: 50px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#cta-processo .steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  margin-bottom: 50px;
+}
+
+#cta-processo .step-card {
+  background: #fff;
+  padding: 30px 20px;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#cta-processo .step-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+#cta-processo .step-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #04b600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+#cta-processo .step-icon i {
+  color: #fff;
+  font-size: 26px;
+}
+
+#cta-processo h3 {
+  font-size: 1.3rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+#cta-processo p {
+  font-size: 1rem;
+  color: #666;
+}
+
+#cta-processo .cta-button {
+  margin-top: 20px;
+}
+
+#cta-processo .btn-cadastro {
+  display: inline-block;
+  background: #04b600;
+  color: #fff;
+  padding: 14px 40px;
+  font-size: 1.2rem;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+#cta-processo .btn-cadastro:hover {
+  background: #029600;
+  transform: scale(1.05);
+}
+
+
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap");
 
 #contato {
