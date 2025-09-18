@@ -13,12 +13,44 @@
       font-family: "Poppins", sans-serif;
     }
 
+    :root {
+  /* Light Theme Colors */
+  --primary-color: #04b600;
+  --secondary-color: #014700;
+  --accent-color: #8eff8d;
+  --text-primary: #014700;
+  --text-secondary: #7f8c8d;
+  --bg-primary: #dfdfdf;
+  --bg-secondary: #f8fafcc9;
+  --bg-card: #ffffff;
+  --border-color: #e2e8f0;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  --gradient-primary: linear-gradient(135deg, #04b600 0%, #014700 100%);
+  --gradient-secondary: linear-gradient(135deg, #8eff8d 0%, #04b600 100%);
+}
+
+[data-theme="dark"] {
+  /* Dark Theme Colors */
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e0;
+  --bg-primary: #0f130f;
+  --bg-secondary: #111111a2;
+  --bg-card: #111111;
+  --border-color: #2e682d;
+  --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+
     body {
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      background: url(../assets/images/favicon/banner-login.png) no-repeat center center; background-size: cover; height: 100vh;
+      background: url(../assets/images/favicon/banner-login.png) no-repeat center center;
+      background-size: cover;
+      height: 100vh;
       overflow: hidden;
     }
 
@@ -27,11 +59,11 @@
       width: 900px;
       max-width: 95%;
       height: 600px;
-      background: #fff;
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       display: flex;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      backdrop-filter: blur(12px);
     }
 
     /* Painel que se move */
@@ -41,7 +73,7 @@
       left: 50%;
       width: 50%;
       height: 100%;
-      background: linear-gradient(135deg, #00c851, #009432);
+      background: linear-gradient(135deg, rgba(0,200,81,0.9), rgba(0,148,50,0.9));
       color: #fff;
       display: flex;
       flex-direction: column;
@@ -91,6 +123,8 @@
       justify-content: center;
       align-items: center;
       transition: all 0.8s ease-in-out;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(18px);
     }
 
     .form {
@@ -98,15 +132,23 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
+      color: #fff;
+    }
+
+    .form h2 {
+      text-align: center;
+      color: #fff;
+      margin-bottom: 10px;
     }
 
     .input-group {
       display: flex;
       align-items: center;
-      border: 1px solid #ddd;
+      border: 1px solid rgba(255,255,255,0.3);
       border-radius: 10px;
       padding: 12px;
       transition: 0.3s;
+      background: rgba(255,255,255,0.2);
     }
 
     .input-group:focus-within {
@@ -115,7 +157,7 @@
     }
 
     .input-group i {
-      color: #009432;
+      color: #fff;
       margin-right: 10px;
       font-size: 18px;
     }
@@ -126,6 +168,11 @@
       flex: 1;
       font-size: 15px;
       background: transparent;
+      color: #fff;
+    }
+
+    .input-group input::placeholder {
+      color: rgba(255,255,255,0.7);
     }
 
     .submit-btn {
@@ -155,21 +202,22 @@
     .tensao-btn {
       flex: 1;
       padding: 12px;
-      border: 2px solid #009432;
+      border: 2px solid #fff;
       border-radius: 10px;
-      background: #fff;
+      background: transparent;
       cursor: pointer;
       font-weight: 600;
       transition: 0.3s;
+      color: #fff;
     }
 
     .tensao-btn:hover {
-      background: #f0f0f0;
+      background: rgba(255,255,255,0.2);
     }
 
     .tensao-btn.active {
       background: #009432;
-      color: #fff;
+      border-color: #009432;
     }
 
     /* Posição inicial */
@@ -201,6 +249,38 @@
       transform: translateX(-100%);
     }
 
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .container {
+        width: 100%;
+        height: auto;
+        flex-direction: column;
+      }
+
+      .form-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 30px 20px;
+      }
+
+      .overlay-container {
+        position: relative;
+        width: 100%;
+        height: auto;
+        padding: 30px 20px;
+        transform: translateX(0) !important;
+      }
+
+      .container.active .login-container,
+      .container.active .register-container {
+        transform: translateX(0);
+      }
+
+      .overlay-container button {
+        margin-top: 15px;
+      }
+    }
   </style>
   <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
 </head>
@@ -259,7 +339,7 @@
     <div class="overlay-container" id="overlay">
       <h2 id="overlayTitle">Bem-vindo de volta!</h2>
       <p id="overlayText">Já possui conta? Entre agora mesmo para continuar economizando.</p>
-      <button id="toggleBtn">Ir para Login</button>
+      <button id="toggleBtn">Ir para Cadastro</button>
     </div>
   </div>
 
@@ -274,11 +354,11 @@
       if (container.classList.contains("active")) {
         overlayTitle.textContent = "Olá, amigo!";
         overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
-        toggleBtn.textContent = "Ir para Cadastro";
+        toggleBtn.textContent = "Ir para Login";
       } else {
         overlayTitle.textContent = "Bem-vindo de volta!";
         overlayText.textContent = "Já possui conta? Entre agora mesmo para continuar economizando.";
-        toggleBtn.textContent = "Ir para Login";
+        toggleBtn.textContent = "Ir para Cadastro";
       }
     });
 
