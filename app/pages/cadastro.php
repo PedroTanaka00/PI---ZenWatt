@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Cadastro & Login</title>
-  <link rel="stylesheet" href="../assets/css/cadastro.css">
+  <title>Cadastro & Login Responsivo</title>
   <script src="https://kit.fontawesome.com/2c36e9b7b1.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="../assets/css/cadastro.css" />
+
 </head>
 <body>
 
   <div class="container" id="container">
     <!-- Form de Login -->
-    <div class="form-container login-container" id="loginContainer" aria-hidden="true">
+    <div class="form-container login-container" id="loginContainer">
       <form class="form" id="loginForm" autocomplete="on">
         <h2>Login</h2>
         <div class="input-group">
@@ -27,7 +28,7 @@
     </div>
 
     <!-- Form de Cadastro -->
-    <div class="form-container register-container" id="registerContainer" aria-hidden="false">
+    <div class="form-container register-container active-mobile" id="registerContainer">
       <form class="form" id="registerForm" autocomplete="on">
         <h2>Cadastrar</h2>
         <div class="input-group">
@@ -62,11 +63,14 @@
     </div>
 
     <!-- Overlay (painel de instrução/alternância) -->
-    <div class="overlay-container" id="overlay" role="region" aria-label="Painel de alternância">
+    <div class="overlay-container" id="overlay">
+      <div class="logo" >
+        <i class="fas fa-leaf" style="font-size: 30px; color: #fff;"></i>
+      </div>
       <img src="../assets/images/logo-branca.png" width="100" alt="Foto do Usuário">
-      <h2 id="overlayTitle">Olá, amigo!</h2>
+      <h2 id="overlayTitle">Olá!</h2>
       <p id="overlayText">Ainda não tem conta? Cadastre-se e comece agora mesmo.</p>
-      <button id="toggleBtn" aria-pressed="true" aria-controls="loginContainer registerContainer">Ir para Login</button>
+      <button id="toggleBtn">Já Possuo Conta</button>
     </div>
   </div>
 
@@ -79,80 +83,67 @@
       const loginContainer = document.getElementById("loginContainer");
       const registerContainer = document.getElementById("registerContainer");
 
-      // breakpoint mobile
       const MOBILE_BREAK = 768;
       let isMobile = window.innerWidth <= MOBILE_BREAK;
+      let showingRegister = true; // Por padrão, mostra cadastro
 
-      // Inicializar estado: por especificação, mostrar CADASTRO por padrão
+      function updateUI() {
+        if (showingRegister) {
+          overlayTitle.textContent = "Olá!";
+          overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
+          toggleBtn.textContent = "Já Possuo Conta";
+        } else {
+          overlayTitle.textContent = "Bem-vindo de volta!";
+          overlayText.textContent = "Já possui conta? Entre agora mesmo para continuar economizando.";
+          toggleBtn.textContent = "Não Possuo Conta";
+        }
+      }
+
       function initState() {
         isMobile = window.innerWidth <= MOBILE_BREAK;
+        showingRegister = true; // Sempre inicia mostrando cadastro
+        
         if (isMobile) {
-          // mobile: mostra cadastro por padrão
-          container.classList.remove('active');          // remove desktop slide
-          container.classList.add('mobile-register');    // mobile flag para mostrar register
-          overlayTitle.textContent = "Olá, amigo!";
-          overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
-          toggleBtn.textContent = "Ir para Login";
-          toggleBtn.setAttribute('aria-pressed','true');
-          loginContainer.setAttribute('aria-hidden','true');
-          registerContainer.setAttribute('aria-hidden','false');
+          // Mobile: usar classes específicas
+          container.classList.remove('active', 'show-login');
+          loginContainer.classList.remove('active-mobile');
+          registerContainer.classList.add('active-mobile');
         } else {
-          // desktop: adiciona classe active para mostrar register (por padrão)
+          // Desktop: usar sistema de slides
           container.classList.add('active');
-          container.classList.remove('mobile-register');
-          overlayTitle.textContent = "Olá, amigo!";
-          overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
-          toggleBtn.textContent = "Ir para Login";
-          toggleBtn.setAttribute('aria-pressed','true');
-          loginContainer.setAttribute('aria-hidden','true');
-          registerContainer.setAttribute('aria-hidden','false');
+          container.classList.remove('show-login');
         }
+        
+        updateUI();
       }
 
-      // Alterna (funciona tanto em mobile quanto desktop)
       function togglePanels() {
-        if (window.innerWidth <= MOBILE_BREAK) {
-          // mobile behavior: toggle mobile-register to show one form at a time
-          container.classList.toggle('mobile-register');
-          const showingRegister = container.classList.contains('mobile-register');
+        showingRegister = !showingRegister;
+        
+        if (isMobile) {
+          // Mobile: alternar visibilidade
           if (showingRegister) {
-            overlayTitle.textContent = "Olá, amigo!";
-            overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
-            toggleBtn.textContent = "Ir para Login";
-            toggleBtn.setAttribute('aria-pressed','true');
-            loginContainer.setAttribute('aria-hidden','true');
-            registerContainer.setAttribute('aria-hidden','false');
+            container.classList.remove('show-login');
+            loginContainer.classList.remove('active-mobile');
+            registerContainer.classList.add('active-mobile');
           } else {
-            overlayTitle.textContent = "Bem-vindo de volta!";
-            overlayText.textContent = "Já possui conta? Entre agora mesmo para continuar economizando.";
-            toggleBtn.textContent = "Ir para Cadastro";
-            toggleBtn.setAttribute('aria-pressed','false');
-            loginContainer.setAttribute('aria-hidden','false');
-            registerContainer.setAttribute('aria-hidden','true');
+            container.classList.add('show-login');
+            loginContainer.classList.add('active-mobile');
+            registerContainer.classList.remove('active-mobile');
           }
         } else {
-          // desktop behavior: slide (active class)
-          container.classList.toggle('active');
-          const showingRegister = container.classList.contains('active');
+          // Desktop: sistema de slides
           if (showingRegister) {
-            overlayTitle.textContent = "Olá, amigo!";
-            overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
-            toggleBtn.textContent = "Ir para Login";
-            toggleBtn.setAttribute('aria-pressed','true');
-            loginContainer.setAttribute('aria-hidden','true');
-            registerContainer.setAttribute('aria-hidden','false');
+            container.classList.add('active');
           } else {
-            overlayTitle.textContent = "Bem-vindo de volta!";
-            overlayText.textContent = "Já possui conta? Entre agora mesmo para continuar economizando.";
-            toggleBtn.textContent = "Ir para Cadastro";
-            toggleBtn.setAttribute('aria-pressed','false');
-            loginContainer.setAttribute('aria-hidden','false');
-            registerContainer.setAttribute('aria-hidden','true');
+            container.classList.remove('active');
           }
         }
+        
+        updateUI();
       }
 
-      // Seleção de tensão (UI)
+      // Seleção de tensão
       window.selectTensao = function(btn) {
         document.querySelectorAll(".tensao-btn").forEach(b => {
           b.classList.remove("active");
@@ -160,10 +151,9 @@
         });
         btn.classList.add("active");
         btn.setAttribute('aria-pressed','true');
-        // se quiser guardar o valor: use btn.textContent.trim()
       };
 
-      // Handle resize -> manter coerência entre mobile/desktop
+      // Handle resize
       let resizeTimer;
       function handleResize() {
         clearTimeout(resizeTimer);
@@ -171,19 +161,27 @@
           const prevMobile = isMobile;
           isMobile = window.innerWidth <= MOBILE_BREAK;
           if (isMobile !== prevMobile) {
-            // crossing breakpoint -> re-initialize default (cadastro visible)
             initState();
           }
-        }, 80);
+        }, 100);
       }
 
-      // eventos
+      // Eventos
       window.addEventListener('resize', handleResize);
-      window.addEventListener('orientationchange', initState);
+      window.addEventListener('orientationchange', () => {
+        setTimeout(initState, 100);
+      });
       toggleBtn.addEventListener('click', togglePanels);
 
-      // start
+      // Inicializar
       document.addEventListener('DOMContentLoaded', initState);
+      
+      // Garantir inicialização mesmo se DOM já carregou
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initState);
+      } else {
+        initState();
+      }
     })();
   </script>
 
