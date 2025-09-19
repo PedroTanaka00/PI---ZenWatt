@@ -45,7 +45,7 @@
         </div>
 
         <div class="tensao-options" role="tablist" aria-label="Tensão Residencial">
-          <button type="button" class="tensao-btn" onclick="selectTensao(this)" aria-pressed="false">110V</button>
+          <button type="button" class="tensao-btn" onclick="selectTensao(this)" aria-pressed="false">127V</button>
           <button type="button" class="tensao-btn" onclick="selectTensao(this)" aria-pressed="false">220V</button>
         </div>
 
