@@ -1,3 +1,28 @@
+<?php
+class Database {
+    private $host = 'localhost';
+    private $db_name = 'zenwatt';
+    private $username = 'root';
+    private $password = '';
+    public $pdo;
+
+    public function __construct() {
+        try {
+            $this->pdo = new PDO(
+                "mysql:host={$this->host};dbname={$this->db_name};charset=utf8", 
+                $this->username, 
+                $this->password,
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                ]
+            );
+        } catch (PDOException $e) {
+            die("Erro de conexão: " . $e->getMessage());
+        }
+    }
+}
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -183,6 +208,195 @@
         initState();
       }
     })();
+    
+// Função para mostrar mensagens de feedback
+function showMessage(message, type = 'error') {
+    // Remove mensagens anteriores
+    const existingMessages = document.querySelectorAll('.message-feedback');
+    existingMessages.forEach(msg => msg.remove());
+
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `message-feedback ${type}`;
+    messageDiv.textContent = message;
+    messageDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        ${type === 'success' ? 'background: #4CAF50;' : 'background: #f44336;'}
+    `;
+
+    document.body.appendChild(messageDiv);
+
+    // Remove após 5 segundos
+    setTimeout(() => {
+        messageDiv.remove();
+    }, 5000);
+}
+
+// Função para lidar com o login
+async function handleLogin(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const submitBtn = form.querySelector('.submit-btn');
+    
+    // Desabilitar botão durante a requisição
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Entrando...';
+
+    try {
+        const response = await fetch('../controllers/login/login.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.sucesso) {
+            showMessage(data.mensagem, 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect;
+            }, 1500);
+        } else {
+            showMessage(data.mensagem, 'error');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showMessage('Erro de conexão. Tente novamente.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Entrar';
+    }
+}
+
+// Função para lidar com o cadastro
+async function handleRegister(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    const submitBtn = form.querySelector('.submit-btn');
+    
+    // Adicionar tensão selecionada ao formData
+    const tensaoBtn = document.querySelector('.tensao-btn.active');
+    if (tensaoBtn) {
+        formData.append('tensao', tensaoBtn.textContent.replace('V', ''));
+    } else {
+        showMessage('Selecione a tensão residencial', 'error');
+        return;
+    }
+
+    // Validar senhas
+    const senha = formData.get('senha_cadastro');
+    const confirmarSenha = formData.get('confirmar_senha');
+    
+    if (senha !== confirmarSenha) {
+        showMessage('As senhas não coincidem', 'error');
+        return;
+    }
+
+    if (senha.length < 6) {
+        showMessage('A senha deve ter pelo menos 6 caracteres', 'error');
+        return;
+    }
+
+    // Desabilitar botão durante a requisição
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Cadastrando...';
+
+    try {
+        const response = await fetch('../controllers/cadastro/cadastro.php', {
+            method: 'POST',
+            body: formData
+        });
+
+        const data = await response.json();
+
+        if (data.sucesso) {
+            showMessage(data.mensagem, 'success');
+            setTimeout(() => {
+                window.location.href = data.redirect;
+            }, 1500);
+        } else {
+            showMessage(data.mensagem, 'error');
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        showMessage('Erro de conexão. Tente novamente.', 'error');
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Cadastrar';
+    }
+}
+
+// Adicionar event listeners aos formulários
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+    }
+
+    if (registerForm) {
+        registerForm.addEventListener('submit', handleRegister);
+    }
+
+    // Selecionar 127V por padrão
+    const primeiraTensao = document.querySelector('.tensao-btn');
+    if (primeiraTensao) {
+        window.selectTensao(primeiraTensao);
+    }
+});
+
+// Adicionar estilo CSS para as mensagens
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .message-feedback {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+    }
+    
+    .message-feedback.success {
+        background: #4CAF50;
+    }
+    
+    .message-feedback.error {
+        background: #f44336;
+    }
+    
+    .submit-btn:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+    }
+`;
+document.head.appendChild(style);
+
   </script>
 
 </body>
