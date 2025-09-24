@@ -113,7 +113,7 @@ class Database {
       let showingRegister = true; // Por padrão, mostra cadastro
 
       function updateUI() {
-        if (showingRegister) {
+        if (!showingRegister) {
           overlayTitle.textContent = "Olá!";
           overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
           toggleBtn.textContent = "Já Possuo Conta";
@@ -126,7 +126,7 @@ class Database {
 
       function initState() {
         isMobile = window.innerWidth <= MOBILE_BREAK;
-        showingRegister = true; // Sempre inicia mostrando cadastro
+        showingRegister = TRUE; // Sempre inicia mostrando cadastro
         
         if (isMobile) {
           // Mobile: usar classes específicas

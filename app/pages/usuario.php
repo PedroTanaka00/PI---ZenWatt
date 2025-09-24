@@ -65,7 +65,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
       <li><i class="fas fa-cog"></i> <span>Configurações</span></li>
       <li><i class="fas fa-lock"></i> <span>Privacidade</span></li>
       <li class="logout">
-        <a href="logout.php" style="color: inherit; text-decoration: none;">
+        <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
           <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
         </a>
       </li>

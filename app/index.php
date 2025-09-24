@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($pdo)) {
             </ul>
             <div class="nav-controls">
                 <a href="./pages/cadastro.php" class="login-link nav-link">Cadastro</a>
-                <a href="./pages/login.php" class="login-link nav-link">Login</a>
+                <a href="./pages/cadastro.php" class="login-link nav-link">Login</a>
 
                 <button class="theme-toggle" id="themeToggle">
                     <i class="fas fa-moon"></i>
