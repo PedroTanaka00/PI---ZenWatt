@@ -504,7 +504,7 @@ async function calcularConsumo() {
 
 async function calcularConsumoAuto() {
     try {
-        const res = await fetch("../controllers/calcular_consumo.php");
+        const res = await fetch("../controllers/consumo/consumo.php");
         const data = await res.json();
 
         if (data.sucesso) {
