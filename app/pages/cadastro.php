@@ -95,7 +95,7 @@ class Database {
       <img src="../assets/images/logo-branca.png" width="100" alt="Foto do Usuário">
       <h2 id="overlayTitle">Olá!</h2>
       <p id="overlayText">Ainda não tem conta? Cadastre-se e comece agora mesmo.</p>
-      <button id="toggleBtn">Já Possuo Conta</button>
+      <button id="toggleBtn">Não Possuo Conta</button>
     </div>
   </div>
 
@@ -116,11 +116,11 @@ class Database {
         if (!showingRegister) {
           overlayTitle.textContent = "Olá!";
           overlayText.textContent = "Ainda não tem conta? Cadastre-se e comece agora mesmo.";
-          toggleBtn.textContent = "Já Possuo Conta";
+          toggleBtn.textContent = "Não Possuo Conta";
         } else {
           overlayTitle.textContent = "Bem-vindo de volta!";
           overlayText.textContent = "Já possui conta? Entre agora mesmo para continuar economizando.";
-          toggleBtn.textContent = "Não Possuo Conta";
+          toggleBtn.textContent = "Já Possuo Conta";
         }
       }
 

@@ -3,17 +3,16 @@ session_start();
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: ./pages/usuario.php');
+    header('Location: login.php');
     exit();
 }
 
 // Usar caminho absoluto para evitar erros
-$base_dir = dirname(__DIR__); // Volta 1 nível para a pasta app
+$base_dir = dirname(__DIR__);
 require_once $base_dir . '/config/database.php';
 
 $database = new Database();
-// Use $db = $database->pdo; (como no login) OU $db = $database->getConnection();
-$db = $database->pdo;
+$db = $database->getConnection();
 
 // Buscar dados do usuário
 $query = "SELECT * FROM usuarios WHERE id = :id";
@@ -21,6 +20,107 @@ $stmt = $db->prepare($query);
 $stmt->bindParam(':id', $_SESSION['usuario_id']);
 $stmt->execute();
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$usuario) {
+    echo "Usuário não encontrado!";
+    exit();
+}
+
+// Buscar imóveis do usuário
+$imoveis = [];
+try {
+    $query_imoveis = "SELECT * FROM imoveis WHERE usuario_id = :usuario_id";
+    $stmt_imoveis = $db->prepare($query_imoveis);
+    $stmt_imoveis->bindParam(':usuario_id', $_SESSION['usuario_id']);
+    $stmt_imoveis->execute();
+    $imoveis = $stmt_imoveis->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    error_log("Erro ao buscar imóveis: " . $e->getMessage());
+}
+
+// Buscar equipamentos do usuário
+$equipamentos = [];
+$consumo_hoje = 12.4;
+$custo_mensal = 238.90;
+$economia_percentual = 18;
+
+if (!empty($imoveis)) {
+    $imoveis_ids = array_column($imoveis, 'id');
+    $placeholders = str_repeat('?,', count($imoveis_ids) - 1) . '?';
+    
+    try {
+        // Buscar áreas dos imóveis
+        $query_areas = "SELECT * FROM areas WHERE imovel_id IN ($placeholders)";
+        $stmt_areas = $db->prepare($query_areas);
+        $stmt_areas->execute($imoveis_ids);
+        $areas = $stmt_areas->fetchAll(PDO::FETCH_ASSOC);
+        
+        if (!empty($areas)) {
+            $areas_ids = array_column($areas, 'id');
+            $placeholders_equip = str_repeat('?,', count($areas_ids) - 1) . '?';
+            
+            // Buscar equipamentos das áreas
+            $query_equipamentos = "SELECT * FROM equipamentos WHERE area_id IN ($placeholders_equip)";
+            $stmt_equipamentos = $db->prepare($query_equipamentos);
+            $stmt_equipamentos->execute($areas_ids);
+            $equipamentos = $stmt_equipamentos->fetchAll(PDO::FETCH_ASSOC);
+            
+            // Calcular consumo baseado nos equipamentos
+            if (!empty($equipamentos)) {
+                $consumo_hoje = 0;
+                $custo_mensal = 0;
+                
+                foreach ($equipamentos as $equipamento) {
+                    $dias_uso = isset($equipamento['dias_uso_semana']) ? $equipamento['dias_uso_semana'] : 7;
+                    $horas_por_dia = isset($equipamento['horas_por_dia']) ? $equipamento['horas_por_dia'] : 0;
+                    $potencia = isset($equipamento['potencia']) ? $equipamento['potencia'] : 0;
+                    
+                    $consumo_diario = ($potencia * $horas_por_dia * ($dias_uso / 7)) / 1000;
+                    $consumo_hoje += $consumo_diario;
+                    $custo_mensal += $consumo_diario * 30 * 0.75;
+                }
+                
+                // Arredondar valores
+                $consumo_hoje = round($consumo_hoje, 1);
+                $custo_mensal = round($custo_mensal, 2);
+            }
+        }
+    } catch (PDOException $e) {
+        error_log("Erro ao buscar equipamentos: " . $e->getMessage());
+    }
+}
+
+// Buscar dados de consumo para gráficos
+$consumos = [];
+$labels_consumo = [];
+$dados_consumo = [];
+
+try {
+    $query_consumo = "SELECT * FROM consumos WHERE usuario_id = :usuario_id ORDER BY data_registro DESC LIMIT 30";
+    $stmt_consumo = $db->prepare($query_consumo);
+    $stmt_consumo->bindParam(':usuario_id', $_SESSION['usuario_id']);
+    $stmt_consumo->execute();
+    $consumos = $stmt_consumo->fetchAll(PDO::FETCH_ASSOC);
+    
+    if (!empty($consumos)) {
+        foreach ($consumos as $consumo) {
+            $labels_consumo[] = date('d/m', strtotime($consumo['data_registro']));
+            $dados_consumo[] = $consumo['consumo_kwh'];
+        }
+        $labels_consumo = array_reverse($labels_consumo);
+        $dados_consumo = array_reverse($dados_consumo);
+    }
+} catch (PDOException $e) {
+    error_log("Erro ao buscar consumos: " . $e->getMessage());
+}
+
+// Se não houver dados de consumo, usar dados de exemplo
+if (empty($dados_consumo)) {
+    for ($i = 29; $i >= 0; $i--) {
+        $labels_consumo[] = date('d/m', strtotime("-$i days"));
+        $dados_consumo[] = rand(8, 20);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +129,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Painel do Usuário - ZenWatt</title>
-  <link rel="stylesheet" href="../assets/css/usuario.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 
   <!-- Favicons -->
@@ -58,7 +158,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
     </div>
     <ul class="menu">
       <li class="active"><i class="fas fa-home"></i> <span>Dashboard</span></li>
-      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php">gerenciar</a></li>
+      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php">Gerenciar</a></li>
       <li><i class="fas fa-map-marker-alt"></i> <a href="../pages/localizacao.php">Localização</a></li>
       <li><i class="fas fa-comment"></i> <span>Chat</span></li>
       <li><i class="fas fa-star"></i> <span>Favoritos</span></li>
@@ -80,6 +180,20 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
         <input type="text" id="searchInput" placeholder="Pesquisar...">
         <i class="fas fa-search"></i>
       </div>
+      <div class="user-info">
+        <?php if (!empty($imoveis)): ?>
+          <select id="selecionarImovel" class="imovel-selector">
+            <?php foreach ($imoveis as $imovel): ?>
+              <option value="<?php echo $imovel['id']; ?>">
+                <?php echo htmlspecialchars($imovel['endereco']) . ', ' . htmlspecialchars($imovel['cidade']); ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+        <?php else: ?>
+          <span class="no-imoveis">Nenhum imóvel cadastrado</span>
+          <a href="../pages/gerenciar.php" class="btn-small">Cadastrar Imóvel</a>
+        <?php endif; ?>
+      </div>
       <div class="top-icons">
         <i class="fas fa-bell"></i>
         <i class="fas fa-user"></i>
@@ -89,35 +203,52 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
     <!-- Dashboard -->
     <section class="dashboard">
+      <!-- Alertas do sistema -->
+      <?php if (empty($imoveis) || empty($equipamentos)): ?>
+        <div class="card wide alert-card">
+          <div class="alert-content">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <h3>Configuração Inicial Necessária</h3>
+              <p>Para uma experiência completa, cadastre seus imóveis e equipamentos.</p>
+              <div class="alert-actions">
+                <a href="../pages/gerenciar.php" class="btn">Cadastrar Imóvel</a>
+                <button class="btn ghost" onclick="mostrarFormEquipamentos()">Adicionar Equipamentos</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      <?php endif; ?>
+
       <!-- KPIs -->
       <div class="card small kpi">
         <div class="kpi-icon"><i class="fa-solid fa-bolt"></i></div>
-        <div>
+        <div class="kpi-content">
           <h3>Consumo Hoje</h3>
-          <p class="big-number" id="kpiHoje">12.4 kWh</p>
-          <span class="kpi-sub">+8% vs ontem</span>
+          <p class="big-number" id="kpiHoje"><?php echo number_format($consumo_hoje, 1); ?> kWh</p>
+          <span class="kpi-sub" id="variacaoHoje">Carregando...</span>
         </div>
       </div>
 
       <div class="card small kpi">
         <div class="kpi-icon"><i class="fa-solid fa-money-bill-wave"></i></div>
-        <div>
+        <div class="kpi-content">
           <h3>Custo Estimado (mês)</h3>
-          <p class="big-number" id="kpiCusto">R$ 238,90</p>
+          <p class="big-number" id="kpiCusto">R$ <?php echo number_format($custo_mensal, 2, ',', '.'); ?></p>
           <span class="kpi-sub">Bandeira: Verde</span>
         </div>
       </div>
 
       <div class="card small kpi">
         <div class="kpi-icon"><i class="fa-solid fa-seedling"></i></div>
-        <div>
+        <div class="kpi-content">
           <h3>Economia</h3>
-          <p class="big-number" id="kpiEconomia">18%</p>
+          <p class="big-number" id="kpiEconomia"><?php echo $economia_percentual; ?>%</p>
           <span class="kpi-sub">vs média dos últimos 3 meses</span>
         </div>
       </div>
 
-      <!-- Gráficos principais -->
+      <!-- Visualizações principais -->
       <div class="card chart">
         <div class="card-header">
           <h3>Consumo Diário (últimos 30 dias)</h3>
@@ -125,7 +256,7 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             <button class="btn ghost" id="btnAtualizar1"><i class="fa-solid fa-rotate"></i> atualizar</button>
           </div>
         </div>
-        <canvas id="lineChart"></canvas>
+        <div id="lineChart"></div>
       </div>
 
       <div class="card chart">
@@ -135,39 +266,39 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
             <button class="btn ghost" id="btnAtualizar2"><i class="fa-solid fa-rotate"></i> atualizar</button>
           </div>
         </div>
-        <canvas id="barChart"></canvas>
+        <div id="barChart"></div>
       </div>
 
       <div class="card chart">
         <div class="card-header">
           <h3>Consumo por Finalidade</h3>
         </div>
-        <canvas id="doughnutChart"></canvas>
+        <div id="doughnutChart"></div>
       </div>
 
       <div class="card chart">
         <div class="card-header">
           <h3>Picos por Faixa Horária</h3>
         </div>
-        <canvas id="areaChart"></canvas>
+        <div id="areaChart"></div>
       </div>
 
       <div class="card chart">
         <div class="card-header">
-          <h3>Participação por Eletrodoméstico</h3>
+          <h3>Participação por Equipamento</h3>
         </div>
-        <canvas id="aparelhosChart"></canvas>
+        <div id="equipamentosChart"></div>
       </div>
 
       <div class="card chart">
         <div class="card-header">
           <h3>Projeção de Consumo (próx. 6 meses)</h3>
         </div>
-        <canvas id="projectionChart"></canvas>
+        <div id="projectionChart"></div>
       </div>
 
-      <!-- Calendário (maior + CTA) -->
-      <div class="card calendar" style="width: 200% !important">
+      <!-- Calendário -->
+      <div class="card calendar">
         <div class="card-header calendar-header">
           <h3>Calendário</h3>
           <div class="calendar-cta">
@@ -176,60 +307,61 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
           </div>
         </div>
         <div class="calendar-grid" id="calendarGrid">
-          <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
-          <!-- exemplo mês com 31 dias e offset de 2 -->
-          <div></div><div></div>
-          <div class="day">1</div><div class="day">2</div><div class="day">3</div><div class="day">4</div><div class="day">5</div>
-          <div class="day">6</div><div class="day">7</div><div class="day active">8</div><div class="day">9</div><div class="day">10</div><div class="day">11</div><div class="day">12</div>
-          <div class="day">13</div><div class="day">14</div><div class="day">15</div><div class="day">16</div><div class="day">17</div><div class="day">18</div><div class="day">19</div>
-          <div class="day">20</div><div class="day">21</div><div class="day">22</div><div class="day">23</div><div class="day active">24</div><div class="day">25</div><div class="day">26</div>
-          <div class="day">27</div><div class="day">28</div><div class="day">29</div><div class="day">30</div><div class="day">31</div>
+          <!-- Gerado via JavaScript -->
         </div>
       </div>
 
-      <!-- Formulário de eletrodomésticos -->
-      <div class="card wide">
+      <!-- Tabela de equipamentos -->
+      <div class="card wide" id="equipamentosSection">
         <div class="card-header">
-          <h3>Adicionar Eletrodoméstico</h3>
+          <h3>Meus Equipamentos</h3>
+          <?php if (empty($equipamentos)): ?>
+            <span class="badge">Nenhum equipamento</span>
+          <?php else: ?>
+            <span class="badge"><?php echo count($equipamentos); ?> equipamentos</span>
+          <?php endif; ?>
         </div>
-        <form id="formAparelho" class="aparelho-form">
-          <div class="form-row">
-            <div class="field">
-              <label>Nome</label>
-              <input type="text" id="aparelhoNome" placeholder="Ex: Geladeira" required />
-            </div>
-            <div class="field">
-              <label>Potência (W)</label>
-              <input type="number" id="aparelhoPotencia" min="1" placeholder="Ex: 150" required />
-            </div>
-            <div class="field">
-              <label>Horas/dia</label>
-              <input type="number" id="aparelhoHoras" step="0.1" min="0" placeholder="Ex: 8" required />
-            </div>
-            <div class="field">
-              <label>Quantidade</label>
-              <input type="number" id="aparelhoQtd" min="1" value="1" required />
-            </div>
-            <div class="field submit-field">
-              <button type="submit" class="btn"><i class="fa-solid fa-plus"></i> Adicionar</button>
-            </div>
-          </div>
-        </form>
 
         <div class="table-wrap">
-          <table class="table" id="tabelaAparelhos">
+          <table class="table" id="tabelaEquipamentos">
             <thead>
               <tr>
-                <th>Aparelho</th>
+                <th>Equipamento</th>
+                <th>Modelo</th>
                 <th>Potência (W)</th>
                 <th>Horas/dia</th>
-                <th>Qtd</th>
-                <th>kWh/mês (estimado)</th>
-                <th></th>
+                <th>Dias/semana</th>
+                <th>kWh/mês</th>
+                <th>Custo/mês</th>
               </tr>
             </thead>
             <tbody>
-              <!-- linhas adicionadas via JS -->
+              <?php if (!empty($equipamentos)): ?>
+                <?php foreach ($equipamentos as $equipamento): ?>
+                  <?php
+                  // Calcular consumo mensal
+                  $dias_uso = isset($equipamento['dias_uso_semana']) ? $equipamento['dias_uso_semana'] : 7;
+                  $horas_por_dia = isset($equipamento['horas_por_dia']) ? $equipamento['horas_por_dia'] : 0;
+                  $potencia = isset($equipamento['potencia']) ? $equipamento['potencia'] : 0;
+                  
+                  $consumo_mensal_kwh = ($potencia * $horas_por_dia * $dias_uso * 4.33) / 1000;
+                  $custo_mensal = $consumo_mensal_kwh * 0.75;
+                  ?>
+                  <tr>
+                    <td><?php echo htmlspecialchars($equipamento['nome']); ?></td>
+                    <td><?php echo isset($equipamento['modelo']) ? htmlspecialchars($equipamento['modelo']) : '-'; ?></td>
+                    <td><?php echo number_format($potencia, 0); ?></td>
+                    <td><?php echo number_format($horas_por_dia, 1); ?></td>
+                    <td><?php echo $dias_uso; ?></td>
+                    <td><?php echo number_format($consumo_mensal_kwh, 1); ?></td>
+                    <td>R$ <?php echo number_format($custo_mensal, 2, ',', '.'); ?></td>
+                  </tr>
+                <?php endforeach; ?>
+              <?php else: ?>
+                <tr>
+                  <td colspan="7" class="no-data">Nenhum equipamento cadastrado</td>
+                </tr>
+              <?php endif; ?>
             </tbody>
           </table>
         </div>
@@ -241,15 +373,25 @@ $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
   <div class="modal" id="calendarModal">
     <div class="modal-content">
       <span class="close-btn" id="closeModal">&times;</span>
-      <h2 id="modalTitle">Evento</h2>
-      <p id="modalText">Consumo do dia selecionado e dicas aparecerão aqui.</p>
+      <h2 id="modalTitle">Consumo do Dia</h2>
+      <p id="modalText">Carregando dados do consumo...</p>
       <div class="modal-actions">
         <a class="btn" href="historico.php">Abrir histórico</a>
       </div>
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Dados do PHP para JavaScript
+    window.consumoData = {
+        labels: <?php echo json_encode($labels_consumo); ?>,
+        valores: <?php echo json_encode($dados_consumo); ?>,
+        hoje: <?php echo $consumo_hoje; ?>,
+        custo: <?php echo $custo_mensal; ?>,
+        economia: <?php echo $economia_percentual; ?>,
+        equipamentos: <?php echo !empty($equipamentos) ? json_encode($equipamentos) : '[]'; ?>
+    };
+  </script>
   <script src="../assets/js/usuario.js"></script>
 </body>
 </html>
