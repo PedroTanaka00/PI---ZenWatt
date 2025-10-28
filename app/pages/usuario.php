@@ -157,16 +157,16 @@ if (empty($dados_consumo)) {
       <p><?php echo htmlspecialchars($usuario['email']); ?></p>
     </div>
     <ul class="menu">
-      <li class="active"><i class="fas fa-home"></i> <span>Dashboard</span></li>
-      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php">Gerenciar</a></li>
-      <li><i class="fas fa-map-marker-alt"></i> <a href="../pages/localizacao.php">Localização</a></li>
-      <li><i class="fas fa-comment"></i> <span>Chat</span></li>
-      <li><i class="fas fa-star"></i> <span>Favoritos</span></li>
-      <li><i class="fas fa-cog"></i> <span>Configurações</span></li>
-      <li><i class="fas fa-lock"></i> <span>Privacidade</span></li>
+      <li class="active"><i class="fas fa-home"></i> <span style="color: #fff !important;">Dashboard</span></li>
+      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php" style="color: #fff !important;">Gerenciar</a></li>
+      <li><i class="fas fa-map-marker-alt"></i> <a href="../pages/localizacao.php" style="color: #fff !important;">Localização</a></li>
+      <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
+      <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
+      <li><i class="fas fa-cog"></i> <span style="color: #fff !important;">Configurações</span></li>
+      <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
       <li class="logout">
         <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
-          <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+          <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
         </a>
       </li>
     </ul>

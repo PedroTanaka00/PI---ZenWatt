@@ -7,7 +7,7 @@
     --background: #F5F7FA;
     --surface: #FFFFFF;
     --text-primary: #263238;
-    --text-secondary: #546E7A;
+    --text-secondary: #3a3a3a;
     --text-light: #90A4AE;
     --border: #E0E0E0;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
@@ -33,7 +33,7 @@ body {
 /* ========== SIDEBAR ========== */
 .sidebar {
     width: 280px;
-    background: var(--surface);
+    background: linear-gradient(135deg, #000000 0%, #013500 100%);
     box-shadow: var(--shadow);
     display: flex;
     flex-direction: column;
@@ -61,12 +61,12 @@ body {
 .profile h3 {
     font-size: 1.2rem;
     margin-bottom: 0.25rem;
-    color: var(--text-primary);
+    color: #fff;
 }
 
 .profile p {
     font-size: 0.9rem;
-    color: var(--text-secondary);
+    color: #fff;
 }
 
 .menu {
@@ -99,6 +99,7 @@ body {
     margin-right: 0.75rem;
     width: 20px;
     text-align: center;
+    color: #fff;
 }
 
 .menu li a {
@@ -219,7 +220,7 @@ body {
 .dashboard {
     padding: 2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(28rem, 1fr));
     gap: 1.5rem;
     width: 100%;
 }
@@ -501,7 +502,6 @@ body {
 
 .mes-valor {
     position: absolute;
-    top: -25px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.8rem;
@@ -631,7 +631,6 @@ body {
 
 .pico-valor {
     position: absolute;
-    top: -20px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.7rem;
@@ -780,7 +779,6 @@ body {
 
 .projecao-valor {
     position: absolute;
-    top: -20px;
     left: 50%;
     transform: translateX(-50%);
     font-size: 0.7rem;

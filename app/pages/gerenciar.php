@@ -42,16 +42,16 @@ if (!$usuario) {
       <p><?php echo htmlspecialchars($usuario['email']); ?></p>
     </div>
     <ul class="menu">
-      <li><a href="usuario.php"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
-      <li><a href="conta.php"><i class="fas fa-user"></i> <span>Conta</span></a></li>
-      <li class="active"><i class="fas fa-building"></i> <span>Gerenciar</span></li>
-      <li><i class="fas fa-map-marker-alt"></i> <span>Localização</span></li>
-      <li><i class="fas fa-comment"></i> <span>Chat</span></li>
-      <li><i class="fas fa-star"></i> <span>Favoritos</span></li>
-      <li><i class="fas fa-cog"></i> <span>Configurações</span></li>
+      <li class="active"><i class="fas fa-home"></i> <a href="../pages/usuario.php" style="color: #fff !important;">Dashboard</a></li>
+      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php" style="color: #fff !important;">Gerenciar</a></li>
+      <li><i class="fas fa-map-marker-alt"></i> <a href="../pages/localizacao.php" style="color: #fff !important;">Localização</a></li>
+      <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
+      <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
+      <li><i class="fas fa-cog"></i> <span style="color: #fff !important;">Configurações</span></li>
+      <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
       <li class="logout">
-        <a href="logout.php" style="color: inherit; text-decoration: none;">
-          <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
+        <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
+          <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
         </a>
       </li>
     </ul>
@@ -70,7 +70,7 @@ if (!$usuario) {
         </div>
         <div class="top-icons">
           <i class="fas fa-bell"></i>
-          <i class="fas fa-user"></i>
+          <a href="conta.php"><i class="fas fa-user"></i></a>
         </div>
       </div>
     </header>

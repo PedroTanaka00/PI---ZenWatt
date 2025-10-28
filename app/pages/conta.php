@@ -41,27 +41,27 @@ try {
 <body>
 
     <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="profile">
-            <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
-            <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
-            <p><?php echo htmlspecialchars($usuario['email']); ?></p>
-        </div>
-        <ul class="menu">
-            <li class="active"><i class="fas fa-home"></i> <a href="../pages/usuario.php">Dashboard</a></li>
-            <li><i class="fas fa-user"></i><a href="../pages/conta.php ">Conta</a></li>
-            <li><i class="fas fa-map-marker-alt"></i> <span>Localização</span></li>
-            <li><i class="fas fa-comment"></i> <span>Chat</span></li>
-            <li><i class="fas fa-star"></i> <span>Favoritos</span></li>
-            <li><i class="fas fa-cog"></i> <span>Configurações</span></li>
-            <li><i class="fas fa-lock"></i> <span>Privacidade</span></li>
-            <li class="logout">
-                <a href="logout.php" style="color: inherit; text-decoration: none;">
-                    <i class="fas fa-sign-out-alt"></i> <span>Sair</span>
-                </a>
-            </li>
-        </ul>
-    </aside>
+<aside class="sidebar">
+    <div class="profile">
+      <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
+      <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
+      <p><?php echo htmlspecialchars($usuario['email']); ?></p>
+    </div>
+    <ul class="menu">
+      <li class="active"><i class="fas fa-home"></i> <a href="../pages/usuario.php" style="color: #fff !important;">Dashboard</a></li>
+      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php" style="color: #fff !important;">Gerenciar</a></li>
+      <li><i class="fas fa-map-marker-alt"></i> <a href="../pages/localizacao.php" style="color: #fff !important;">Localização</a></li>
+      <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
+      <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
+      <li><i class="fas fa-cog"></i> <span style="color: #fff !important;">Configurações</span></li>
+      <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
+      <li class="logout">
+        <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
+          <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
     <div class="container">
         <h1><i class="fas fa-user-circle"></i> Minha Conta</h1>
 
