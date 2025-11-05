@@ -3,8 +3,8 @@ session_start();
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: login.php');
-    exit();
+  header('Location: login.php');
+  exit();
 }
 
 // Usar caminho absoluto para evitar erros
@@ -22,20 +22,20 @@ $stmt->execute();
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$usuario) {
-    echo "Usuário não encontrado!";
-    exit();
+  echo "Usuário não encontrado!";
+  exit();
 }
 
 // Buscar imóveis do usuário
 $imoveis = [];
 try {
-    $query_imoveis = "SELECT * FROM imoveis WHERE usuario_id = :usuario_id";
-    $stmt_imoveis = $db->prepare($query_imoveis);
-    $stmt_imoveis->bindParam(':usuario_id', $_SESSION['usuario_id']);
-    $stmt_imoveis->execute();
-    $imoveis = $stmt_imoveis->fetchAll(PDO::FETCH_ASSOC);
+  $query_imoveis = "SELECT * FROM imoveis WHERE usuario_id = :usuario_id";
+  $stmt_imoveis = $db->prepare($query_imoveis);
+  $stmt_imoveis->bindParam(':usuario_id', $_SESSION['usuario_id']);
+  $stmt_imoveis->execute();
+  $imoveis = $stmt_imoveis->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Erro ao buscar imóveis: " . $e->getMessage());
+  error_log("Erro ao buscar imóveis: " . $e->getMessage());
 }
 
 // Buscar equipamentos do usuário
@@ -45,49 +45,49 @@ $custo_mensal = 238.90;
 $economia_percentual = 18;
 
 if (!empty($imoveis)) {
-    $imoveis_ids = array_column($imoveis, 'id');
-    $placeholders = str_repeat('?,', count($imoveis_ids) - 1) . '?';
-    
-    try {
-        // Buscar áreas dos imóveis
-        $query_areas = "SELECT * FROM areas WHERE imovel_id IN ($placeholders)";
-        $stmt_areas = $db->prepare($query_areas);
-        $stmt_areas->execute($imoveis_ids);
-        $areas = $stmt_areas->fetchAll(PDO::FETCH_ASSOC);
-        
-        if (!empty($areas)) {
-            $areas_ids = array_column($areas, 'id');
-            $placeholders_equip = str_repeat('?,', count($areas_ids) - 1) . '?';
-            
-            // Buscar equipamentos das áreas
-            $query_equipamentos = "SELECT * FROM equipamentos WHERE area_id IN ($placeholders_equip)";
-            $stmt_equipamentos = $db->prepare($query_equipamentos);
-            $stmt_equipamentos->execute($areas_ids);
-            $equipamentos = $stmt_equipamentos->fetchAll(PDO::FETCH_ASSOC);
-            
-            // Calcular consumo baseado nos equipamentos
-            if (!empty($equipamentos)) {
-                $consumo_hoje = 0;
-                $custo_mensal = 0;
-                
-                foreach ($equipamentos as $equipamento) {
-                    $dias_uso = isset($equipamento['dias_uso_semana']) ? $equipamento['dias_uso_semana'] : 7;
-                    $horas_por_dia = isset($equipamento['horas_por_dia']) ? $equipamento['horas_por_dia'] : 0;
-                    $potencia = isset($equipamento['potencia']) ? $equipamento['potencia'] : 0;
-                    
-                    $consumo_diario = ($potencia * $horas_por_dia * ($dias_uso / 7)) / 1000;
-                    $consumo_hoje += $consumo_diario;
-                    $custo_mensal += $consumo_diario * 30 * 0.75;
-                }
-                
-                // Arredondar valores
-                $consumo_hoje = round($consumo_hoje, 1);
-                $custo_mensal = round($custo_mensal, 2);
-            }
+  $imoveis_ids = array_column($imoveis, 'id');
+  $placeholders = str_repeat('?,', count($imoveis_ids) - 1) . '?';
+
+  try {
+    // Buscar áreas dos imóveis
+    $query_areas = "SELECT * FROM areas WHERE imovel_id IN ($placeholders)";
+    $stmt_areas = $db->prepare($query_areas);
+    $stmt_areas->execute($imoveis_ids);
+    $areas = $stmt_areas->fetchAll(PDO::FETCH_ASSOC);
+
+    if (!empty($areas)) {
+      $areas_ids = array_column($areas, 'id');
+      $placeholders_equip = str_repeat('?,', count($areas_ids) - 1) . '?';
+
+      // Buscar equipamentos das áreas
+      $query_equipamentos = "SELECT * FROM equipamentos WHERE area_id IN ($placeholders_equip)";
+      $stmt_equipamentos = $db->prepare($query_equipamentos);
+      $stmt_equipamentos->execute($areas_ids);
+      $equipamentos = $stmt_equipamentos->fetchAll(PDO::FETCH_ASSOC);
+
+      // Calcular consumo baseado nos equipamentos
+      if (!empty($equipamentos)) {
+        $consumo_hoje = 0;
+        $custo_mensal = 0;
+
+        foreach ($equipamentos as $equipamento) {
+          $dias_uso = isset($equipamento['dias_uso_semana']) ? $equipamento['dias_uso_semana'] : 7;
+          $horas_por_dia = isset($equipamento['horas_por_dia']) ? $equipamento['horas_por_dia'] : 0;
+          $potencia = isset($equipamento['potencia']) ? $equipamento['potencia'] : 0;
+
+          $consumo_diario = ($potencia * $horas_por_dia * ($dias_uso / 7)) / 1000;
+          $consumo_hoje += $consumo_diario;
+          $custo_mensal += $consumo_diario * 30 * 0.75;
         }
-    } catch (PDOException $e) {
-        error_log("Erro ao buscar equipamentos: " . $e->getMessage());
+
+        // Arredondar valores
+        $consumo_hoje = round($consumo_hoje, 1);
+        $custo_mensal = round($custo_mensal, 2);
+      }
     }
+  } catch (PDOException $e) {
+    error_log("Erro ao buscar equipamentos: " . $e->getMessage());
+  }
 }
 
 // Buscar dados de consumo para gráficos
@@ -96,38 +96,39 @@ $labels_consumo = [];
 $dados_consumo = [];
 
 try {
-    $query_consumo = "SELECT * FROM consumos WHERE usuario_id = :usuario_id ORDER BY data_registro DESC LIMIT 30";
-    $stmt_consumo = $db->prepare($query_consumo);
-    $stmt_consumo->bindParam(':usuario_id', $_SESSION['usuario_id']);
-    $stmt_consumo->execute();
-    $consumos = $stmt_consumo->fetchAll(PDO::FETCH_ASSOC);
-    
-    if (!empty($consumos)) {
-        foreach ($consumos as $consumo) {
-            $labels_consumo[] = date('d/m', strtotime($consumo['data_registro']));
-            $dados_consumo[] = $consumo['consumo_kwh'];
-        }
-        $labels_consumo = array_reverse($labels_consumo);
-        $dados_consumo = array_reverse($dados_consumo);
+  $query_consumo = "SELECT * FROM consumos WHERE usuario_id = :usuario_id ORDER BY data_registro DESC LIMIT 30";
+  $stmt_consumo = $db->prepare($query_consumo);
+  $stmt_consumo->bindParam(':usuario_id', $_SESSION['usuario_id']);
+  $stmt_consumo->execute();
+  $consumos = $stmt_consumo->fetchAll(PDO::FETCH_ASSOC);
+
+  if (!empty($consumos)) {
+    foreach ($consumos as $consumo) {
+      $labels_consumo[] = date('d/m', strtotime($consumo['data_registro']));
+      $dados_consumo[] = $consumo['consumo_kwh'];
     }
+    $labels_consumo = array_reverse($labels_consumo);
+    $dados_consumo = array_reverse($dados_consumo);
+  }
 } catch (PDOException $e) {
-    error_log("Erro ao buscar consumos: " . $e->getMessage());
+  error_log("Erro ao buscar consumos: " . $e->getMessage());
 }
 
 // Se não houver dados de consumo, usar dados de exemplo
 if (empty($dados_consumo)) {
-    for ($i = 29; $i >= 0; $i--) {
-        $labels_consumo[] = date('d/m', strtotime("-$i days"));
-        $dados_consumo[] = rand(8, 20);
-    }
+  for ($i = 29; $i >= 0; $i--) {
+    $labels_consumo[] = date('d/m', strtotime("-$i days"));
+    $dados_consumo[] = rand(8, 20);
+  }
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel do Usuário - ZenWatt</title>
   <link rel="stylesheet" href="../assets/css/dashboard.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -147,30 +148,30 @@ if (empty($dados_consumo)) {
   <link rel="icon" type="image/png" href="/favicon/favicon-16x16.png" sizes="16x16" />
   <link rel="icon" type="image/png" href="/favicon/favicon-128.png" sizes="128x128" />
 </head>
+
 <body>
 
   <!-- Sidebar -->
-  <aside class="sidebar">
-    <div class="profile">
-      <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
-      <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
-      <p><?php echo htmlspecialchars($usuario['email']); ?></p>
-    </div>
-    <ul class="menu">
-      <li class="active"><i class="fas fa-home"></i> <span style="color: #fff !important;">Dashboard</span></li>
-      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php" style="color: #fff !important;">Gerenciar</a></li>
-      <li><i class="fas fa-map-marker-alt"></i> <a href="../pages/localizacao.php" style="color: #fff !important;">Localização</a></li>
-      <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
-      <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
-      <li><i class="fas fa-cog"></i> <span style="color: #fff !important;">Configurações</span></li>
-      <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
-      <li class="logout">
-        <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
-          <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
-        </a>
-      </li>
-    </ul>
-  </aside>
+    <aside class="sidebar">
+        <div class="profile">
+            <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
+            <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
+            <p><?php echo htmlspecialchars($usuario['email']); ?></p>
+        </div>
+        <ul class="menu">
+            <li class="active"><a href="usuario.php"><i class="fas fa-home"></i> <span style="color: #fff !important;">Dashboard</span></li></a>
+            <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php"style="color: #fff !important;">Gerenciar</a></li>
+            <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
+            <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
+            <li><i class="fas fa-cog"></i> <a href="../pages/conta.php"><span style="color: #fff !important;">Configurações</span></li></a>
+            <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
+            <li class="logout">
+                <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
+                    <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
 
   <!-- Main -->
   <main class="main-content">
@@ -302,7 +303,8 @@ if (empty($dados_consumo)) {
         <div class="card-header calendar-header">
           <h3>Calendário</h3>
           <div class="calendar-cta">
-            <span class="hint"><i class="fa-solid fa-clock-rotate-left"></i> Dica: acompanhe o <strong>Histórico de consumo</strong> por dia.</span>
+            <span class="hint"><i class="fa-solid fa-clock-rotate-left"></i> Dica: acompanhe o <strong>Histórico de
+                consumo</strong> por dia.</span>
             <a href="historico.php" class="btn">Ver Histórico</a>
           </div>
         </div>
@@ -343,7 +345,7 @@ if (empty($dados_consumo)) {
                   $dias_uso = isset($equipamento['dias_uso_semana']) ? $equipamento['dias_uso_semana'] : 7;
                   $horas_por_dia = isset($equipamento['horas_por_dia']) ? $equipamento['horas_por_dia'] : 0;
                   $potencia = isset($equipamento['potencia']) ? $equipamento['potencia'] : 0;
-                  
+
                   $consumo_mensal_kwh = ($potencia * $horas_por_dia * $dias_uso * 4.33) / 1000;
                   $custo_mensal = $consumo_mensal_kwh * 0.75;
                   ?>
@@ -384,14 +386,15 @@ if (empty($dados_consumo)) {
   <script>
     // Dados do PHP para JavaScript
     window.consumoData = {
-        labels: <?php echo json_encode($labels_consumo); ?>,
-        valores: <?php echo json_encode($dados_consumo); ?>,
-        hoje: <?php echo $consumo_hoje; ?>,
-        custo: <?php echo $custo_mensal; ?>,
-        economia: <?php echo $economia_percentual; ?>,
-        equipamentos: <?php echo !empty($equipamentos) ? json_encode($equipamentos) : '[]'; ?>
+      labels: <?php echo json_encode($labels_consumo); ?>,
+      valores: <?php echo json_encode($dados_consumo); ?>,
+      hoje: <?php echo $consumo_hoje; ?>,
+      custo: <?php echo $custo_mensal; ?>,
+      economia: <?php echo $economia_percentual; ?>,
+      equipamentos: <?php echo !empty($equipamentos) ? json_encode($equipamentos) : '[]'; ?>
     };
   </script>
   <script src="../assets/js/usuario.js"></script>
 </body>
+
 </html>

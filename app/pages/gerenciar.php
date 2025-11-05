@@ -3,8 +3,8 @@ session_start();
 
 // Verificar se o usuário está logado
 if (!isset($_SESSION['usuario_id'])) {
-    header('Location: usuario.php');
-    exit();
+  header('Location: usuario.php');
+  exit();
 }
 
 require_once '../config/database.php';
@@ -20,42 +20,43 @@ $stmt->execute();
 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$usuario) {
-    session_destroy();
-    header('Location: usuario.php');
-    exit();
+  session_destroy();
+  header('Location: usuario.php');
+  exit();
 }
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Painel do Usuário - ZenWatt</title>
   <link rel="stylesheet" href="../assets/css/gerenciar.css" />
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
+
 <body>
-  <aside class="sidebar">
-    <div class="profile">
-      <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
-      <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
-      <p><?php echo htmlspecialchars($usuario['email']); ?></p>
-    </div>
-    <ul class="menu">
-      <li class="active"><i class="fas fa-home"></i> <a href="../pages/usuario.php" style="color: #fff !important;">Dashboard</a></li>
-      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php" style="color: #fff !important;">Gerenciar</a></li>
-      <li><i class="fas fa-map-marker-alt"></i> <a href="../pages/localizacao.php" style="color: #fff !important;">Localização</a></li>
-      <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
-      <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
-      <li><i class="fas fa-cog"></i> <span style="color: #fff !important;">Configurações</span></li>
-      <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
-      <li class="logout">
-        <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
-          <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
-        </a>
-      </li>
-    </ul>
-  </aside>
+    <aside class="sidebar">
+        <div class="profile">
+            <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
+            <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
+            <p><?php echo htmlspecialchars($usuario['email']); ?></p>
+        </div>
+        <ul class="menu">
+            <li class="active"><a href="usuario.php"><i class="fas fa-home"></i> <span style="color: #fff !important;">Dashboard</span></li></a>
+            <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php"style="color: #fff !important;">Gerenciar</a></li>
+            <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
+            <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
+            <li><i class="fas fa-cog"></i> <a href="../pages/conta.php"><span style="color: #fff !important;">Configurações</span></li></a>
+            <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
+            <li class="logout">
+                <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
+                    <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
+                </a>
+            </li>
+        </ul>
+    </aside>
 
   <main class="main-content">
     <header class="topbar">
@@ -286,11 +287,13 @@ if (!$usuario) {
                   </div>
                   <div class="field">
                     <label>Potência (W)</label>
-                    <input type="number" step="0.01" id="potencia_equip" name="potencia" placeholder="Ex: 1200" required />
+                    <input type="number" step="0.01" id="potencia_equip" name="potencia" placeholder="Ex: 1200"
+                      required />
                   </div>
                   <div class="field">
                     <label>Horas por Dia</label>
-                    <input type="number" step="0.1" id="horas_equip" name="horas_por_dia" placeholder="Ex: 4.5" required />
+                    <input type="number" step="0.1" id="horas_equip" name="horas_por_dia" placeholder="Ex: 4.5"
+                      required />
                   </div>
                 </div>
                 <div class="form-actions">
@@ -414,4 +417,5 @@ if (!$usuario) {
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="../assets/js/gerenciar.js"></script>
 </body>
+
 </html>

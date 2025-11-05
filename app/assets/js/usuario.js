@@ -78,7 +78,7 @@ const VisualizacaoManager = {
     let html = `
             <div class="comparativo-mensal">
                 <div class="comparativo-header">
-                    <span>Comparativo Mensal (kWh)</span>
+                    <span></span>
                 </div>
                 <div class="comparativo-barras">
         `;
@@ -247,7 +247,7 @@ const VisualizacaoManager = {
     let html = `
             <div class="projecao-consumo">
                 <div class="projecao-header">
-                    <span>Projeção de Consumo (próx. 6 meses)</span>
+                    <span></span>
                     <div class="projecao-legenda">
                         <div class="legenda-item">
                             <div class="cor-projecao"></div>

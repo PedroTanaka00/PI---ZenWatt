@@ -39,14 +39,17 @@ body {
     flex-direction: column;
     z-index: 100;
     position: fixed;
-    height: 100vh;
-    overflow-y: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow: hidden; /* impede rolagem interna */
 }
 
+/* ==================== PERFIL ==================== */
 .profile {
     padding: 2rem 1.5rem;
     text-align: center;
-    border-bottom: 1px solid var(--border);
+    border-bottom: none; /* remove faixa branca */
 }
 
 .profile img {
@@ -55,7 +58,7 @@ body {
     border-radius: 50%;
     object-fit: cover;
     margin-bottom: 1rem;
-    border: 3px solid var(--primary-light);
+    border: none; /* remove borda da imagem */
 }
 
 .profile h3 {
@@ -69,6 +72,7 @@ body {
     color: #fff;
 }
 
+/* ==================== MENU ==================== */
 .menu {
     list-style: none;
     padding: 1.5rem 0;
@@ -81,18 +85,11 @@ body {
     align-items: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: var(--text-secondary);
+    color: #fff;
 }
 
 .menu li:hover {
-    background-color: rgba(46, 125, 50, 0.05);
-    color: var(--primary);
-}
-
-.menu li.active {
-    background-color: rgba(46, 125, 50, 0.1);
-    color: var(--primary);
-    border-left: 4px solid var(--primary);
+    background-color: rgba(255, 255, 255, 0.05);
 }
 
 .menu li i {
@@ -112,10 +109,9 @@ body {
 
 .menu .logout {
     margin-top: auto;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
     color: #f44336;
 }
-
 /* ========== MAIN CONTENT ========== */
 .main-content {
     flex: 1;
@@ -704,7 +700,7 @@ body {
 .projecao-legenda {
     display: flex;
     gap: 1rem;
-    font-size: 0.8rem;
+    margin-top: -6.0rem;
 }
 
 .legenda-item {
