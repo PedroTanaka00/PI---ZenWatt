@@ -152,26 +152,30 @@ if (empty($dados_consumo)) {
 <body>
 
   <!-- Sidebar -->
-    <aside class="sidebar">
-        <div class="profile">
-            <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
-            <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
-            <p><?php echo htmlspecialchars($usuario['email']); ?></p>
-        </div>
-        <ul class="menu">
-            <li class="active"><a href="usuario.php"><i class="fas fa-home"></i> <span style="color: #fff !important;">Dashboard</span></li></a>
-            <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php"style="color: #fff !important;">Gerenciar</a></li>
-            <li><i class="fas fa-comment"></i> <span style="color: #fff !important;">Chat</span></li>
-            <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
-            <li><i class="fas fa-cog"></i> <a href="../pages/conta.php"><span style="color: #fff !important;">Configurações</span></li></a>
-            <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
-            <li class="logout">
-                <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
-                    <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
-                </a>
-            </li>
-        </ul>
-    </aside>
+  <aside class="sidebar">
+    <div class="profile">
+      <img src="../assets/images/fav-zen.png" alt="Foto do Usuário">
+      <h3><?php echo htmlspecialchars($usuario['nome']); ?></h3>
+      <p><?php echo htmlspecialchars($usuario['email']); ?></p>
+    </div>
+    <ul class="menu">
+      <li class="active"><a href="usuario.php"><i class="fas fa-home"></i> <span
+            style="color: #fff !important;">Dashboard</span></li></a>
+      <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php" style="color: #fff !important;">Gerenciar</a>
+      </li>
+      <li><i class="fa-solid fa-chart-line"></i> <a href="monitoramento.php"><span
+            style="color: #fff !important;">Monitoramento</span></a></li>
+      <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
+      <li><i class="fas fa-cog"></i> <a href="../pages/conta.php"><span
+            style="color: #fff !important;">Configurações</span></li></a>
+      <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
+      <li class="logout">
+        <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
+          <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
+        </a>
+      </li>
+    </ul>
+  </aside>
 
   <!-- Main -->
   <main class="main-content">
