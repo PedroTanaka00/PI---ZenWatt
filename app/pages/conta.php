@@ -3,7 +3,7 @@ session_start();
 
 // Se não estiver logado, redireciona para login
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login.php");
+    header("Location: cadastro.php");
     exit;
 }
 
