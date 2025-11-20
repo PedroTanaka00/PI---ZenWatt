@@ -218,7 +218,7 @@ body {
 .dashboard {
     padding: 2rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(22rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
     gap: 1.5rem;
     width: 100%;
 }
@@ -502,7 +502,7 @@ body {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: bold;
     color: var(--text-primary);
 }

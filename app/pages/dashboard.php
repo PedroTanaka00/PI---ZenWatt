@@ -159,7 +159,7 @@ if (empty($dados_consumo)) {
       <p><?php echo htmlspecialchars($usuario['email']); ?></p>
     </div>
     <ul class="menu">
-      <li class="active"><a href="usuario.php"><i class="fas fa-home"></i> <span
+      <li class="active"><a href="dashboard.php"><i class="fas fa-home"></i> <span
             style="color: #fff !important;">Dashboard</span></li></a>
       <li><i class="fas fa-user"></i> <a href="../pages/gerenciar.php" style="color: #fff !important;">Gerenciar</a>
       </li>
@@ -168,7 +168,8 @@ if (empty($dados_consumo)) {
       <li><i class="fas fa-star"></i> <span style="color: #fff !important;">Favoritos</span></li>
       <li><i class="fas fa-cog"></i> <a href="../pages/conta.php"><span
             style="color: #fff !important;">Configurações</span></li></a>
-      <li><i class="fas fa-lock"></i> <span style="color: #fff !important;">Privacidade</span></li>
+      <li><i class="fas fa-lock"><a href="privacidade.php"></i> <span style="color: #fff !important;">Privacidade</span>
+      </li></a>
       <li class="logout">
         <a href="../pages/logout.php" style="color: inherit; text-decoration: none;">
           <i class="fas fa-sign-out-alt"></i> <span style="color: #fff !important;">Sair</span>
@@ -203,8 +204,8 @@ if (empty($dados_consumo)) {
         <i class="fas fa-bell"></i>
         <i class="fas fa-user"></i>
         <i class="fas fa-ellipsis-h"></i>
-        <i class="fas fa-calendar-alt" id="openCalendarModal"></i> 
-        
+        <i class="fas fa-calendar-alt" id="openCalendarModal"></i>
+
       </div>
     </header>
 
@@ -278,36 +279,10 @@ if (empty($dados_consumo)) {
 
       <div class="card chart">
         <div class="card-header">
-          <h3>Consumo por Finalidade</h3>
-        </div>
-        <div id="doughnutChart"></div>
-      </div>
-
-      <div class="card chart">
-        <div class="card-header">
-          <h3>Picos por Faixa Horária</h3>
-        </div>
-        <div id="areaChart"></div>
-      </div>
-
-      <div class="card chart">
-        <div class="card-header">
           <h3>Participação por Equipamento</h3>
         </div>
         <div id="equipamentosChart"></div>
       </div>
-
-      <div class="card chart">
-        <div class="card-header">
-          <h3>Projeção de Consumo (próx. 6 meses)</h3>
-        </div>
-        <div id="projectionChart"></div>
-      </div>
-
-      <!-- Calendário -->
-      <!-- Botão do Calendário -->
-      
-
       <!-- Modal do Calendário -->
       <div class="modal-overlay" id="modalCalendarOverlay">
         <div class="modal-calendar">
@@ -348,157 +323,157 @@ if (empty($dados_consumo)) {
         </div>
       </div>
 
-<script>
-  // Controle do Modal do Calendário
-(function() {
-  const modalOverlay = document.getElementById('modalCalendarOverlay');
-  const openBtn = document.getElementById('openCalendarModal');
-  const closeBtn = document.getElementById('closeCalendarModal');
-  const calendarGrid = document.getElementById('modalCalendarGrid');
-  const currentMonthEl = document.getElementById('currentMonth');
-  const prevBtn = document.getElementById('prevMonth');
-  const nextBtn = document.getElementById('nextMonth');
+      <script>
+        // Controle do Modal do Calendário
+        (function () {
+          const modalOverlay = document.getElementById('modalCalendarOverlay');
+          const openBtn = document.getElementById('openCalendarModal');
+          const closeBtn = document.getElementById('closeCalendarModal');
+          const calendarGrid = document.getElementById('modalCalendarGrid');
+          const currentMonthEl = document.getElementById('currentMonth');
+          const prevBtn = document.getElementById('prevMonth');
+          const nextBtn = document.getElementById('nextMonth');
 
-  let currentDate = new Date();
-  const meses = [
-    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-  ];
-  const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+          let currentDate = new Date();
+          const meses = [
+            'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+            'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+          ];
+          const diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 
-  // Dados de exemplo (substitua pelos dados reais do seu PHP)
-  const consumoData = {
-    '2024-01-15': 12.5,
-    '2024-01-16': 18.3,
-    '2024-01-17': 25.7,
-    '2024-01-18': 15.2,
-    '2024-01-19': 22.1,
-    '2024-01-20': 30.5,
-    '2024-01-21': 14.8
-  };
+          // Dados de exemplo (substitua pelos dados reais do seu PHP)
+          const consumoData = {
+            '2024-01-15': 12.5,
+            '2024-01-16': 18.3,
+            '2024-01-17': 25.7,
+            '2024-01-18': 15.2,
+            '2024-01-19': 22.1,
+            '2024-01-20': 30.5,
+            '2024-01-21': 14.8
+          };
 
-  // Abrir modal
-  openBtn.addEventListener('click', function() {
-    modalOverlay.classList.add('active');
-    renderCalendar();
-  });
+          // Abrir modal
+          openBtn.addEventListener('click', function () {
+            modalOverlay.classList.add('active');
+            renderCalendar();
+          });
 
-  // Fechar modal
-  closeBtn.addEventListener('click', function() {
-    modalOverlay.classList.remove('active');
-  });
+          // Fechar modal
+          closeBtn.addEventListener('click', function () {
+            modalOverlay.classList.remove('active');
+          });
 
-  // Fechar ao clicar fora
-  modalOverlay.addEventListener('click', function(e) {
-    if (e.target === modalOverlay) {
-      modalOverlay.classList.remove('active');
-    }
-  });
+          // Fechar ao clicar fora
+          modalOverlay.addEventListener('click', function (e) {
+            if (e.target === modalOverlay) {
+              modalOverlay.classList.remove('active');
+            }
+          });
 
-  // Fechar com ESC
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
-      modalOverlay.classList.remove('active');
-    }
-  });
+          // Fechar com ESC
+          document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('active')) {
+              modalOverlay.classList.remove('active');
+            }
+          });
 
-  // Navegação de meses
-  prevBtn.addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar();
-  });
+          // Navegação de meses
+          prevBtn.addEventListener('click', function () {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+          });
 
-  nextBtn.addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar();
-  });
+          nextBtn.addEventListener('click', function () {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+          });
 
-  // Renderizar calendário
-  function renderCalendar() {
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    
-    currentMonthEl.textContent = `${meses[month]} ${year}`;
-    
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-    
-    let html = '';
-    
-    // Cabeçalhos dos dias da semana
-    diasSemana.forEach(dia => {
-      html += `<div class="calendar-day-header">${dia}</div>`;
-    });
-    
-    // Dias vazios antes do primeiro dia
-    for (let i = 0; i < startingDayOfWeek; i++) {
-      html += '<div class="calendar-day empty"></div>';
-    }
-    
-    // Dias do mês
-    const today = new Date();
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-      const consumption = consumoData[dateStr] || 0;
-      
-      let classes = 'calendar-day';
-      let consumptionText = '';
-      
-      // Verificar se é hoje
-      if (today.getDate() === day && today.getMonth() === month && today.getFullYear() === year) {
-        classes += ' today';
-      }
-      
-      // Adicionar classe baseada no consumo
-      if (consumption > 0) {
-        classes += ' has-data';
-        consumptionText = `<div class="day-consumption">${consumption.toFixed(1)} kWh</div>`;
-        
-        if (consumption < 15) {
-          classes += ' low-consumption';
-        } else if (consumption < 25) {
-          classes += ' medium-consumption';
-        } else {
-          classes += ' high-consumption';
-        }
-      }
-      
-      html += `
+          // Renderizar calendário
+          function renderCalendar() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+
+            currentMonthEl.textContent = `${meses[month]} ${year}`;
+
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDayOfWeek = firstDay.getDay();
+
+            let html = '';
+
+            // Cabeçalhos dos dias da semana
+            diasSemana.forEach(dia => {
+              html += `<div class="calendar-day-header">${dia}</div>`;
+            });
+
+            // Dias vazios antes do primeiro dia
+            for (let i = 0; i < startingDayOfWeek; i++) {
+              html += '<div class="calendar-day empty"></div>';
+            }
+
+            // Dias do mês
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+              const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+              const consumption = consumoData[dateStr] || 0;
+
+              let classes = 'calendar-day';
+              let consumptionText = '';
+
+              // Verificar se é hoje
+              if (today.getDate() === day && today.getMonth() === month && today.getFullYear() === year) {
+                classes += ' today';
+              }
+
+              // Adicionar classe baseada no consumo
+              if (consumption > 0) {
+                classes += ' has-data';
+                consumptionText = `<div class="day-consumption">${consumption.toFixed(1)} kWh</div>`;
+
+                if (consumption < 15) {
+                  classes += ' low-consumption';
+                } else if (consumption < 25) {
+                  classes += ' medium-consumption';
+                } else {
+                  classes += ' high-consumption';
+                }
+              }
+
+              html += `
         <div class="${classes}" data-date="${dateStr}" data-consumption="${consumption}">
           <div class="day-number">${day}</div>
           ${consumptionText}
         </div>
       `;
-    }
-    
-    calendarGrid.innerHTML = html;
-    
-    // Adicionar eventos de clique nos dias
-    document.querySelectorAll('.calendar-day:not(.empty)').forEach(dayEl => {
-      dayEl.addEventListener('click', function() {
-        const date = this.dataset.date;
-        const consumption = this.dataset.consumption;
-        showDayDetails(date, consumption);
-      });
-    });
-  }
+            }
 
-  // Mostrar detalhes do dia (você pode abrir outro modal ou mostrar info)
-  function showDayDetails(date, consumption) {
-    const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
-    if (parseFloat(consumption) > 0) {
-      alert(`Data: ${formattedDate}\nConsumo: ${consumption} kWh`);
-    } else {
-      alert(`Data: ${formattedDate}\nSem dados de consumo`);
-    }
-  }
+            calendarGrid.innerHTML = html;
 
-  // Renderizar calendário inicial
-  renderCalendar();
-})();
-</script>
+            // Adicionar eventos de clique nos dias
+            document.querySelectorAll('.calendar-day:not(.empty)').forEach(dayEl => {
+              dayEl.addEventListener('click', function () {
+                const date = this.dataset.date;
+                const consumption = this.dataset.consumption;
+                showDayDetails(date, consumption);
+              });
+            });
+          }
+
+          // Mostrar detalhes do dia (você pode abrir outro modal ou mostrar info)
+          function showDayDetails(date, consumption) {
+            const formattedDate = new Date(date + 'T00:00:00').toLocaleDateString('pt-BR');
+            if (parseFloat(consumption) > 0) {
+              alert(`Data: ${formattedDate}\nConsumo: ${consumption} kWh`);
+            } else {
+              alert(`Data: ${formattedDate}\nSem dados de consumo`);
+            }
+          }
+
+          // Renderizar calendário inicial
+          renderCalendar();
+        })();
+      </script>
 
       <!-- Tabela de equipamentos -->
       <div class="card wide" id="equipamentosSection">

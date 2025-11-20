@@ -1,0 +1,184 @@
+:root {
+    --primary: #2E7D32;
+    --primary-light: #4CAF50;
+    --primary-dark: #1B5E20;
+    --secondary: #FF9800;
+    --accent: #2196F3;
+    --background: #F5F7FA;
+    --surface: #FFFFFF;
+    --text-primary: #263238;
+    --text-secondary: #3a3a3a;
+    --text-light: #90A4AE;
+    --border: #E0E0E0;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.12);
+    --radius: 12px;
+    --radius-sm: 8px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ========== SIDEBAR ========== */
+.sidebar {
+    width: 280px;
+    background: linear-gradient(135deg, #000000 0%, #013500 100%);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    overflow: hidden; /* impede rolagem interna */
+}
+
+/* ==================== PERFIL ==================== */
+.profile {
+    padding: 2rem 1.5rem;
+    text-align: center;
+    border-bottom: none; /* remove faixa branca */
+}
+
+.profile img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: none; /* remove borda da imagem */
+}
+
+.profile h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+    color: #fff;
+}
+
+.profile p {
+    font-size: 0.9rem;
+    color: #fff;
+}
+
+/* ==================== MENU ==================== */
+.menu {
+    list-style: none;
+    padding: 1.5rem 0;
+    flex-grow: 1;
+}
+
+.menu li {
+    padding: 0.85rem 1.5rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #fff;
+}
+
+.menu li:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.menu li i {
+    margin-right: 0.75rem;
+    width: 20px;
+    text-align: center;
+    color: #fff;
+}
+
+.menu li a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.menu .logout {
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #f44336;
+}
+
+/* CONTAINER PRINCIPAL */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.content-area {
+    margin-left: 280px; /* mesma largura da sidebar */
+    padding: 20px;
+}
+
+/* TÍTULOS */
+h1 {
+    font-size: 2.4rem;
+    color: #014d00;
+    margin-bottom: 10px;
+}
+
+h2 {
+    margin-top: 25px;
+    color: #036400;
+}
+
+h3 {
+    margin-top: 15px;
+    color: #147a00;
+}
+
+/* TEXTO */
+p, li {
+    font-size: 1rem;
+    line-height: 1.7rem;
+    color: #333;
+}
+
+ul {
+    padding-left: 20px;
+    margin: 8px 0;
+}
+
+/* DATA ATUALIZAÇÃO */
+.update {
+    color: #777;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* SEPARAÇÃO ENTRE SEÇÕES */
+section {
+    margin-bottom: 25px;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 600px) {
+    .container {
+        padding: 20px;
+        margin: 20px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}
